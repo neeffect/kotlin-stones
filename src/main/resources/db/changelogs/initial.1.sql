@@ -1,6 +1,8 @@
+create sequence StonesSeq;
+
 create table STONES
 (
-	ID BIGINT not null,
+	ID BIGINT default StonesSeq.nextval,
 	NAME VARCHAR not null,
 	PRICE DECIMAL,
 	constraint STONES_PK
