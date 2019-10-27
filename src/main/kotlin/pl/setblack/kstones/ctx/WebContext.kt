@@ -10,7 +10,8 @@ import java.sql.Connection
 class WebContext(
     val jdbcProvider: TxProvider<Connection, JDBCProvider>,
     val cacheProvider: CacheProvider)
-    : TxProvider<Connection, WebContext>, CacheProvider by cacheProvider {
+    : TxProvider<Connection, WebContext>,
+    CacheProvider by cacheProvider {
     override fun getConnection(): TxConnection<Connection>  = jdbcProvider.getConnection()
 
     override fun setConnectionState(newState: TxConnection<Connection>): WebContext =

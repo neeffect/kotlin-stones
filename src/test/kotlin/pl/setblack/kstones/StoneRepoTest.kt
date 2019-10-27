@@ -1,5 +1,7 @@
 package pl.setblack.kstones
 
+import arrow.core.right
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import liquibase.Liquibase
 import liquibase.changelog.DatabaseChangeLog
@@ -14,21 +16,27 @@ import java.util.*
 import liquibase.LabelExpression
 import liquibase.Contexts
 import org.jooq.impl.DSL.update
-
-
+import pl.setblack.kstones.ctx.WebContext
+import pl.setblack.nee.effects.cache.NaiveCacheProvider
+import pl.setblack.nee.effects.jdbc.JDBCProvider
 
 
 class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
         createDb()
         val repo = StoneRepo()
+        val wc = createWebContext()
 
         When("Inserting stone to db") {
             val stone = StoneData("old1", 4.toBigDecimal())
             val added = repo.addNewStone(stone)
-        }
-        Then("") {
-
+                //.perform(wc)(Unit)
+            Then("") {
+                val result = added.flatMap {
+                    repo.readAllStones()
+                }.perform(wc)(Unit).toFuture().get()
+                result.get().size() shouldBe 1
+            }
         }
     }
 
@@ -39,8 +47,7 @@ class StoneRepoTest : BehaviorSpec({
         val dbPassword = ""
         fun createDb() {
             try {
-                val c: Connection = DriverManager.getConnection(
-                    dbUrl, dbUser, dbPassword)
+                val c = createDbConnection()
                 val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(c))
                 val liquibase = Liquibase("db/db.changelog-master.xml", ClassLoaderResourceAccessor(), database)
                 liquibase.update(Contexts(), LabelExpression())
@@ -52,5 +59,11 @@ class StoneRepoTest : BehaviorSpec({
                 throw NoSuchElementException(e.message)
             }
         }
+
+        fun createDbConnection() = DriverManager.getConnection(
+                dbUrl, dbUser, dbPassword)
+
+        fun createWebContext() =
+            WebContext(JDBCProvider(createDbConnection()),NaiveCacheProvider())
     }
 }
