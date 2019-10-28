@@ -1,6 +1,7 @@
 buildscript {
     ext {
         nee_version = '0.2.0-SNAPSHOT'
+        ext.ktor_version = '1.2.4'
         db = [
             url : 'jdbc:h2:~/kotlin-stones;AUTO_SERVER=TRUE',
             user : 'sa',
@@ -34,6 +35,8 @@ dependencies {
     implementation "pl.setblack:nee-core:${nee_version}"
     implementation "pl.setblack:nee-jdbc:${nee_version}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
 
     // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
     implementation group: 'org.liquibase', name: 'liquibase-core', version: '3.6.1'
@@ -72,7 +75,7 @@ liquibase {
 jooq {
     version = '3.11.11'
     edition = 'OSS'
-    sample(sourceSets.main) {
+    stones(sourceSets.main) {
         jdbc {
             driver = 'org.h2.Driver'
             url = 'jdbc:h2:~/kotlin-stones;AUTO_SERVER=TRUE'
@@ -93,7 +96,7 @@ jooq {
     }
 }
 
-tasks.generateSampleJooqSchemaSource.with {
+tasks.generateStonesJooqSchemaSource.with {
 
     def out = new ByteArrayOutputStream()
     javaExecSpec = { JavaExecSpec s ->
@@ -109,5 +112,5 @@ tasks.generateSampleJooqSchemaSource.with {
     }
 }
 
-project.tasks.getByName('compileKotlin').dependsOn += 'generateSampleJooqSchemaSource'
-project.tasks.getByName('generateSampleJooqSchemaSource').dependsOn += 'update'
+project.tasks.getByName('compileKotlin').dependsOn += 'generateStonesJooqSchemaSource'
+project.tasks.getByName('generateStonesJooqSchemaSource').dependsOn += 'update'
