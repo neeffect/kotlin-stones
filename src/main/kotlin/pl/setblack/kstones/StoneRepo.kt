@@ -18,36 +18,37 @@ class StoneRepo {
     val jdbc = TxEffect<Connection, WebContext>()
     val cache = CacheEffect<WebContext, Nothing>(NaiveCacheProvider())
 
-    fun readAllStones() = NEE.wrapR(jdbc) { jdbcProvider ->
+    fun readAllStones() = NEE.constP(jdbc) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         dsl.selectFrom(Stones.STONES)
-            .fetchInto(StonesRecord::class.java)
-            .toVavrList()
+                .fetchInto(StonesRecord::class.java)
+                .toVavrList()
+                .map {
+                    Stone( it.id, StoneData(it.name, it.price))
+                }
     }
 
     fun readStone() = NEE.pure(cache.andThen(jdbc)) { jdbcProvider ->
         { id: StoneId ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
             dsl.selectFrom(Stones.STONES)
-                .where(Stones.STONES.ID.eq(id))
-                .fetchOneInto(Stone::class.java)
+                    .where(Stones.STONES.ID.eq(id))
+                    .fetchOneInto(Stone::class.java)
         }
-    }.u()
+    }.constP()
 
     fun addNewStone(newStone: StoneData) =
-        NEE.wrapR(jdbc) { jdbcProvider ->
-            try {
-                val dsl = DSL.using(jdbcProvider.getConnection().getResource())
-                val nextKey = STONESSEQ.nextval()
-                dsl.insertInto(Stones.STONES)
-                    .columns(Stones.STONES.NAME, Stones.STONES.PRICE)
-                    .values(newStone.name, newStone.price)
-                    .execute()
-            } catch (e:Exception) {
-                e.printStackTrace()
-                throw  e
+            NEE.constP(jdbc) { jdbcProvider ->
+                try {
+                    val dsl = DSL.using(jdbcProvider.getConnection().getResource())
+                    dsl.insertInto(Stones.STONES)
+                            .columns(Stones.STONES.NAME, Stones.STONES.PRICE)
+                            .values(newStone.name, newStone.price)
+                            .returning(Stones.STONES.ID)
+                            .fetchOne()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    throw  e
+                }
             }
-
-        }
 }
-
