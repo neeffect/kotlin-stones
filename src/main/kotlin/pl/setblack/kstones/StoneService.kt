@@ -2,8 +2,10 @@ package pl.setblack.kstones
 
 import io.vavr.collection.List
 
-class StoneService {
-    fun allStones () : List<Stone> =
-        TODO()
+class StoneService(private val stoneRepo: StoneRepo) {
+
+    fun allStones ()
+            = stoneRepo.readAllStones()
+
 
 }

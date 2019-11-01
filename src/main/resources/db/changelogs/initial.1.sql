@@ -1,22 +1,19 @@
-create sequence StonesSeq;
+CREATE SEQUENCE GlobalStonesSeq;
 
-create table STONES
+CREATE TABLE  Stones
 (
-	ID BIGINT default StonesSeq.nextval,
-	NAME VARCHAR not null,
-	PRICE DECIMAL,
-	constraint STONES_PK
+	id BIGINT not null, -- flaw in JOOQ or H2 (no returning works_
+	name VARCHAR not null,
+	price DECIMAL,
+	constraint Stones_pk
 		primary key (ID)
 );
 
-create unique index STONES_ID_UINDEX
-	on STONES (ID);
+CREATE UNIQUE INDEX STONES_ID_UINDEX
+	on Stones (ID);
 
-create sequence LogSeq;
-
-
-create table AuditLog (
-    id bigint default LogSeq.nextval,
+CREATE TABLE AuditLogs (
+    id BIGINT not null,
     user VARCHAR not null,
     operation VARCHAR not null,
     operationDate TIMESTAMP not null,

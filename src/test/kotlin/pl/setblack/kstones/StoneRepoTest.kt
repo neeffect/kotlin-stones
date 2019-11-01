@@ -17,6 +17,7 @@ import liquibase.LabelExpression
 import liquibase.Contexts
 import org.jooq.impl.DSL.update
 import pl.setblack.kstones.ctx.WebContext
+import pl.setblack.kstones.db.DbSequence
 import pl.setblack.nee.effects.cache.NaiveCacheProvider
 import pl.setblack.nee.effects.jdbc.JDBCProvider
 
@@ -24,7 +25,7 @@ import pl.setblack.nee.effects.jdbc.JDBCProvider
 class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
         createDb()
-        val repo = StoneRepo()
+        val repo = StoneRepo(DbSequence())
         val wc = createWebContext()
 
         When("Inserting stone to db") {
