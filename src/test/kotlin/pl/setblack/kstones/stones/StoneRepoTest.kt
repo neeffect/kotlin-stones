@@ -1,21 +1,17 @@
-package pl.setblack.kstones
+package pl.setblack.kstones.stones
 
-import arrow.core.right
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import liquibase.Liquibase
-import liquibase.changelog.DatabaseChangeLog
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.exception.LiquibaseException
 import liquibase.resource.ClassLoaderResourceAccessor
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
 import liquibase.LabelExpression
 import liquibase.Contexts
-import org.jooq.impl.DSL.update
 import pl.setblack.kstones.ctx.WebContext
 import pl.setblack.kstones.db.DbSequence
 import pl.setblack.nee.effects.cache.NaiveCacheProvider
@@ -62,7 +58,10 @@ class StoneRepoTest : BehaviorSpec({
         }
 
         fun createDbConnection() = DriverManager.getConnection(
-                dbUrl, dbUser, dbPassword)
+            dbUrl,
+            dbUser,
+            dbPassword
+        )
 
         fun createWebContext() =
             WebContext(JDBCProvider(createDbConnection()),NaiveCacheProvider())

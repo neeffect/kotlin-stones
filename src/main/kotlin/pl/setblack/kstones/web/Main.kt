@@ -4,18 +4,16 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import pl.setblack.kstones.StoneRepo
-import pl.setblack.kstones.StoneService
+import pl.setblack.kstones.stones.StoneRepo
+import pl.setblack.kstones.stones.StoneService
 import pl.setblack.kstones.db.DbSequence
 import io.ktor.jackson.jackson
 import io.ktor.application.install
 import io.vavr.jackson.datatype.VavrModule
+import pl.setblack.kstones.stones.StonesModule
 
 fun main() {
-    val seq = DbSequence()
-    val stoneRepo = StoneRepo(seq)
-    val stoneService = StoneService(stoneRepo)
-    val stoneRest = StoneRest(stoneService)
+    val stonesModule = StonesModule()
 
     val server = embeddedServer(Netty, port = 8080) {
         install(ContentNegotiation) {
@@ -23,8 +21,7 @@ fun main() {
                 this.registerModule(VavrModule())
             }
         }
-
-        routing(stoneRest.api())
+        routing(stonesModule.stoneRest.get().api())
     }
     server.start(wait = true)
 }

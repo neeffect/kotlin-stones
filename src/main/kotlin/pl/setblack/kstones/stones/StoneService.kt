@@ -1,6 +1,6 @@
-package pl.setblack.kstones
+package pl.setblack.kstones.stones
 
-import io.vavr.collection.List
+import pl.setblack.kstones.stones.StoneRepo
 
 class StoneService(private val stoneRepo: StoneRepo) {
 
