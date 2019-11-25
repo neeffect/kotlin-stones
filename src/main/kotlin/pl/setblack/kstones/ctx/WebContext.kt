@@ -9,18 +9,18 @@ import pl.setblack.nee.effects.tx.TxEffect
 import pl.setblack.nee.effects.tx.TxProvider
 import java.sql.Connection
 
-class WebContext(
-    val jdbcProvider: TxProvider<Connection, JDBCProvider>,
-    val cacheProvider: CacheProvider)
-    : TxProvider<Connection, WebContext>,
-    CacheProvider by cacheProvider {
-    override fun getConnection(): TxConnection<Connection>  = jdbcProvider.getConnection()
-
-    override fun setConnectionState(newState: TxConnection<Connection>): WebContext =
-        WebContext(jdbcProvider.setConnectionState(newState), cacheProvider)
-}
-
-object WebEffects {
-    val jdbc = TxEffect<Connection, WebContext>()
-    val cache = CacheEffect<WebContext, Nothing>(NaiveCacheProvider())
-}
+//class WebaaContext(
+//    val jdbcProvider: TxProvider<Connection, JDBCProvider>,
+//    val cacheProvider: CacheProvider)
+//    : TxProvider<Connection, WebContext>,
+//    CacheProvider by cacheProvider {
+//    override fun getConnection(): TxConnection<Connection>  = jdbcProvider.getConnection()
+//
+//    override fun setConnectionState(newState: TxConnection<Connection>): WebContext =
+//        WebContext(jdbcProvider.setConnectionState(newState), cacheProvider)
+//}
+//
+//object WebEffects {
+//    val jdbc = TxEffect<Connection, WebContext>()
+//    val cache = CacheEffect<WebContext, Nothing>(NaiveCacheProvider())
+//}

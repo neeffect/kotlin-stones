@@ -2,27 +2,30 @@ package pl.setblack.kstones.stones
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
+import io.ktor.application.Application
+import io.ktor.server.testing.TestApplicationCall
+import io.ktor.server.testing.createTestEnvironment
+import liquibase.Contexts
+import liquibase.LabelExpression
 import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.exception.LiquibaseException
 import liquibase.resource.ClassLoaderResourceAccessor
+import pl.setblack.kstones.db.DbSequence
+import pl.setblack.nee.ctx.web.WebContext
+import pl.setblack.nee.effects.jdbc.JDBCConfig
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
-import liquibase.LabelExpression
-import liquibase.Contexts
-import pl.setblack.kstones.ctx.WebContext
-import pl.setblack.kstones.db.DbSequence
-import pl.setblack.nee.effects.cache.NaiveCacheProvider
-import pl.setblack.nee.effects.jdbc.JDBCProvider
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
         createDb()
         val repo = StoneRepo(DbSequence())
-        val wc = createWebContext()
+        val wc = createTestWebContext()
 
         When("Inserting stone to db") {
             val stone = StoneData("old1", 4.toBigDecimal())
@@ -39,9 +42,12 @@ class StoneRepoTest : BehaviorSpec({
 
 }) {
     companion object {
-        val dbUrl = "jdbc:h2:mem:test_mem"
-        val dbUser = "sa"
-        val dbPassword = ""
+        val jdbcConfig =  JDBCConfig(
+            driverClassName = "org.h2.Driver",
+            url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+            user = "sa",
+            password = ""
+        )
         fun createDb() {
             try {
                 val c = createDbConnection()
@@ -58,12 +64,17 @@ class StoneRepoTest : BehaviorSpec({
         }
 
         fun createDbConnection() = DriverManager.getConnection(
-            dbUrl,
-            dbUser,
-            dbPassword
+            jdbcConfig.url,
+            jdbcConfig.user,
+            jdbcConfig.password
         )
 
-        fun createWebContext() =
-            WebContext(JDBCProvider(createDbConnection()),NaiveCacheProvider())
+        fun createTestWebContext() : WebContext{
+            val testEnv = createTestEnvironment()
+            val testApplication = Application( testEnv)
+            val testCall = TestApplicationCall(testApplication,false, EmptyCoroutineContext)
+            return WebContext.create(jdbcConfig, testCall)
+        }
+
     }
 }
