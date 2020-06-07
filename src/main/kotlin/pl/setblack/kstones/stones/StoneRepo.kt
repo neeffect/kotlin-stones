@@ -30,11 +30,12 @@ class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
     fun readStone() = Nee.pure(cache.andThen(jdbc)) { jdbcProvider ->
         { id: StoneId ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
-            dsl.selectFrom(Stones.STONES)
+            val record = dsl.selectFrom(Stones.STONES)
                 .where(Stones.STONES.ID.eq(id))
-                .fetchOneInto(Stone::class.java)
+                .fetchOneInto(Stones.STONES)
+            Stone(record.id, StoneData(record.name, record.price))
         }
-    }.constP()
+    }.anyError()
 
     fun addNewStone(newStone: StoneData) = seq.next().flatMap {
         addStone(it, newStone)
