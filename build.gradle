@@ -16,7 +16,7 @@ plugins {
     id 'nu.studer.jooq' version '3.0.3'
     id 'org.liquibase.gradle' version '2.0.3'
 }
-
+apply plugin: 'idea'
 apply plugin: 'java'
 
 group 'pl.setblack'
@@ -36,6 +36,8 @@ dependencies {
 
     implementation "pl.setblack:nee-ctx-web-ktor:${nee_version}"
     implementation "pl.setblack:nee-jdbc:${nee_version}"
+    implementation "pl.setblack:nee-security-jdbc:${nee_version}"
+
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
@@ -44,13 +46,18 @@ dependencies {
     implementation "io.ktor:ktor-jackson:$ktor_version"
     implementation("io.vavr:vavr-jackson:0.10.2")
 
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.5.5'
     // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
     implementation group: 'org.liquibase', name: 'liquibase-core', version: '3.6.1'
     liquibaseRuntime 'org.liquibase:liquibase-core:3.6.1'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.0.1'
     liquibaseRuntime "com.h2database:h2:${h2_version}"
 
+
+    implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
+
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
 }
 

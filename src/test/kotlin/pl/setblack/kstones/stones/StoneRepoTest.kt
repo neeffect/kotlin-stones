@@ -1,6 +1,5 @@
 package pl.setblack.kstones.stones
 
-import com.mchange.v2.c3p0.jboss.C3P0PooledDataSource
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.ktor.application.Application
@@ -38,11 +37,13 @@ class StoneRepoTest : BehaviorSpec({
                 createDb().use {
                     val result = insertedStoneId.flatMap { maybeStoneId ->
                         maybeStoneId.map { stoneId ->
+                            println("reading stone")
                             repo.readStone().constP()(stoneId).map {
                                 Option.some(it)
                             }
                         }.getOrElse(Nee.pure(Option.none()))
                     }.perform(wc)(Unit).toFuture().get()
+                    println("performed")
                     result.get().get().data.name shouldBe "old1"
                 }
             }

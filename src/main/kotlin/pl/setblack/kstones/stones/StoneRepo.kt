@@ -10,12 +10,11 @@ import pl.setblack.kstones.dbModel.public_.tables.Stones
 import pl.setblack.kstones.dbModel.public_.tables.records.StonesRecord
 import pl.setblack.nee.Nee
 import pl.setblack.nee.UANee
-import pl.setblack.nee.andThen
 import pl.setblack.nee.ctx.web.WebContext
-import pl.setblack.nee.ctx.web.WebContext.Effects.cache
 import pl.setblack.nee.ctx.web.WebContext.Effects.jdbc
 
 class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
+
 
     fun readAllStones(): UANee<WebContext, List<Stone>> = Nee.constP(jdbc) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
@@ -27,7 +26,7 @@ class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
             }
     }.anyError()
 
-    fun readStone() = Nee.pure(cache.andThen(jdbc)) { jdbcProvider ->
+    fun readStone() = Nee.pure(jdbc) { jdbcProvider ->
         { id: StoneId ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
             val record = dsl.selectFrom(Stones.STONES)
