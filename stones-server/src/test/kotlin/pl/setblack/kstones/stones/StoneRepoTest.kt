@@ -17,13 +17,10 @@ import pl.setblack.kstones.db.DbSequence
 import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.WebContext
 import pl.setblack.nee.effects.jdbc.JDBCConfig
-import java.lang.RuntimeException
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
-import java.util.*
 import kotlin.coroutines.EmptyCoroutineContext
-
 
 class StoneRepoTest : BehaviorSpec({
     Given("a repo") {

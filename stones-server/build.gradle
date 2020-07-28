@@ -1,0 +1,128 @@
+buildscript {
+    ext {
+        nee_version = '0.2.0-SNAPSHOT'
+        h2_version = '1.4.200'
+        ext.ktor_version = '1.2.4'
+        db = [
+                url     : 'jdbc:h2:~/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET',
+                user    : 'sa',
+                password: ''
+        ]
+
+    }
+}
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
+    id 'nu.studer.jooq' version '3.0.3'
+    id 'org.liquibase.gradle' version '2.0.3'
+}
+apply plugin: 'idea'
+apply plugin: 'java'
+
+group 'pl.setblack'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.jooq:jooq'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation "com.h2database:h2:${h2_version}"
+    jooqRuntime "com.h2database:h2:${h2_version}"
+
+    implementation "pl.setblack:nee-ctx-web-ktor:${nee_version}"
+    implementation "pl.setblack:nee-jdbc:${nee_version}"
+    implementation "pl.setblack:nee-security-jdbc:${nee_version}"
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation("io.vavr:vavr-jackson:0.10.2")
+
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.5.5'
+    // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
+    implementation group: 'org.liquibase', name: 'liquibase-core', version: '3.6.1'
+    liquibaseRuntime 'org.liquibase:liquibase-core:3.6.1'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.0.1'
+    liquibaseRuntime "com.h2database:h2:${h2_version}"
+
+
+    implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
+
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+liquibase {
+    activities {
+        main {
+            changeLogFile "${projectDir}/src/main/resources/db/db.changelog-master.xml"
+            url db['url']
+            username db.user
+            password db.password
+        }
+    }
+}
+
+
+jooq {
+    version = '3.11.11'
+    edition = 'OSS'
+    stones(sourceSets.main) {
+        jdbc {
+            driver = 'org.h2.Driver'
+            url = db['url']
+            user = 'sa'
+            password = ''
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            database {
+                name = 'org.jooq.meta.h2.H2Database'
+                includes = '.*'
+                excludes = ''
+            }
+            target {
+                packageName = 'pl.setblack.kstones.dbModel'
+            }
+        }
+    }
+}
+
+tasks.generateStonesJooqSchemaSource.with {
+    def out = new ByteArrayOutputStream()
+    javaExecSpec = { JavaExecSpec s ->
+        s.standardOutput = out
+        s.errorOutput = out
+        s.ignoreExitValue = true
+        s.jvmArgs '-Xmx512M'
+    }
+    execResultHandler = { ExecResult r ->
+        if (r.exitValue != 0) {
+            throw new RuntimeException('jOOQ source code generation failed:\n\n' + out.toString())
+        }
+    }
+}
+
+project.tasks.getByName('compileKotlin').dependsOn += 'generateStonesJooqSchemaSource'
+project.tasks.getByName('generateStonesJooqSchemaSource').dependsOn += 'update'

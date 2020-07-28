@@ -4,6 +4,7 @@ import io.ktor.application.call
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.put
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.WebContext
@@ -16,6 +17,12 @@ class StoneRest(private val stoneService: StoneService) {
                 .allStones()
             WebContext.create(DbConnection.jdbcConfig, call).serveMessage(async { stones }, Unit)
         }
+//        put("/stones"){
+//            val stones = stoneService
+//                .
+//            WebContext.create(DbConnection.jdbcConfig, call).serveMessage(async { stones }, Unit)
+//
+//        }
         get("/demo") {
             call.respondText("HELLO WORLD!")
         }

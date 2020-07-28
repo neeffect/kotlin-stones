@@ -1,0 +1,7 @@
+GET http://localhost:8080/demo
+
+
+GET http://localhost:8080/stones
+
+<> 2020-07-28T083601.200.json
+
