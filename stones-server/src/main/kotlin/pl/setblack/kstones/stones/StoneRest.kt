@@ -7,15 +7,21 @@ import io.ktor.routing.get
 import io.ktor.routing.put
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.nee.Nee
+import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.ctx.web.WebContext
+import pl.setblack.nee.effects.jdbc.JDBCConfig
 
-class StoneRest(private val stoneService: StoneService) {
+class StoneRest(private val stoneService: StoneService, val parentJdbcConfig: JDBCConfig) {
+    val webContext = object  : JDBCBasedWebContext(){
+        override val jdbcConfig: JDBCConfig = parentJdbcConfig
 
+    }
     fun api(): Routing.() -> Unit = {
         get("/stones") {
             val stones = stoneService
                 .allStones()
-            WebContext.create(DbConnection.jdbcConfig, call).serveMessage(async { stones }, Unit)
+            webContext.create(call).serveMessage(async { stones }, Unit)
+
         }
 //        put("/stones"){
 //            val stones = stoneService

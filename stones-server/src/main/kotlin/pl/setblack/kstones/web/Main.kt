@@ -18,7 +18,7 @@ fun main() {
                 this.registerModule(VavrModule())
             }
         }
-        routing(stonesModule.stoneRest.get().api())
+        routing(stonesModule.stoneRest.api())
     }
     server.start(wait = true)
 }

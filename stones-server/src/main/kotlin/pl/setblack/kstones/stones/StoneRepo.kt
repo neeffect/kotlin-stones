@@ -46,7 +46,7 @@ class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
             .values(stoneId, newStone.name, newStone.price)
             .execute()
         if (insertedRows == 1) {
-            Option.some(stoneId)
+            Option.some(stoneId as StoneId)
         } else {
             Option.none()
         }
