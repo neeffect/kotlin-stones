@@ -9,5 +9,8 @@ import kotlin.browser.window
 
 
 external interface AppState : RState {
-    var currentName: String?
+    val stones: String?
 }
+
+
+
