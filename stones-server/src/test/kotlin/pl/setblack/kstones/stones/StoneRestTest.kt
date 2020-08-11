@@ -28,5 +28,10 @@ internal class StoneRestTest : DescribeSpec({
                 HttpMethod.Get, "/stones").response.content
             stones!! should be("[]")
         }
+        it("should add  stone when empty") {
+            val stones = engine.handleRequest (
+                HttpMethod.Post, "/stones").response.content
+            stones!! should be("[]")
+        }
     }
 })
