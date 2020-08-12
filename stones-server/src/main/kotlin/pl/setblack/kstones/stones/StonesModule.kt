@@ -1,6 +1,9 @@
 package pl.setblack.kstones.stones
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.vavr.Lazy
+import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.kstones.db.DbSequence
 import pl.setblack.nee.security.UserRole
@@ -11,13 +14,19 @@ import pl.setblack.nee.security.UserRole
 open class StonesModule {
     private val seq: DbSequence = DbSequence()
 
-    val jdbcConfig  = DbConnection.jdbcConfig
+    open val objectMapper : ObjectMapper by lazy {
+        ObjectMapper()
+            .registerModule(VavrModule())
+            .registerModule( KotlinModule())
+    }
 
-    val stoneRepo by lazy { StoneRepo(seq) }
+    open val jdbcConfig  = DbConnection.jdbcConfig
 
-    val stoneService by lazy { StoneService(stoneRepo) }
+    open val stoneRepo by lazy { StoneRepo(seq) }
 
-    val stoneRest by lazy { StoneRest(stoneService, jdbcConfig) }
+    open val stoneService by lazy { StoneService(stoneRepo) }
+
+    open val stoneRest by lazy { StoneRest(stoneService, jdbcConfig) }
 
     object SecurityRoles {
         val writer = UserRole("writer")

@@ -13,7 +13,6 @@ internal class StoneServiceTest : DescribeSpec({
     describe("stone service") {
         val testWeb = TestWebContext()
         val wc = testWeb.testCtx()
-
         val stoneService = StonesModule().stoneService
 
         it("should have no stones in init db") {
