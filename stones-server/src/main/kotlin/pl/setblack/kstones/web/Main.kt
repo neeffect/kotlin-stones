@@ -12,7 +12,7 @@ import pl.setblack.kstones.stones.StonesModule
 fun main() {
     val stonesModule = StonesModule()
 
-    val server = embeddedServer(Netty, port = 8080) {
+    val server = embeddedServer(Netty, port = 3000) {
         install(ContentNegotiation) {
             jackson {
                 this.registerModule(VavrModule())

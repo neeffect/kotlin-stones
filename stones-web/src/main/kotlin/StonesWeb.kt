@@ -1,16 +1,11 @@
-
-import react.dom.*
-import kotlin.browser.document
 //import kotlinx.css.*
 //import kotlinx.html.js.onClickFunction
-import styled.*
-import react.*
-import kotlin.browser.window
+import react.RState
 
 
 external interface AppState : RState {
-    val stones: String?
+    var stones: List<Stone>
 }
 
 
-
+data class Stone(val id: Long, val name: String)

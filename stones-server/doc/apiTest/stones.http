@@ -1,0 +1,17 @@
+GET http://localhost:3000/stones
+
+<> 2020-08-06T101641.200.json
+<> 2020-07-28T083601.200.json
+
+
+
+###
+POST http://localhost:3000/stones
+Content-Type: application/json
+
+{
+  "name": "Normalny",
+  "price": 10.99
+}
+
+<> 2020-08-07T104352.500.txt
