@@ -17,11 +17,15 @@ import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.ctx.web.WebContext
 import pl.setblack.nee.effects.jdbc.JDBCConfig
+import pl.setblack.nee.effects.jdbc.JDBCProvider
 import java.math.BigDecimal
 
-class StoneRest(private val stoneService: StoneService, val parentJdbcConfig: JDBCConfig) {
+class StoneRest(
+    private val stoneService: StoneService,
+    private val aJdbcProvider1: JDBCProvider) {
+
     val webContext = object  : JDBCBasedWebContext(){
-        override val jdbcConfig: JDBCConfig = parentJdbcConfig
+        override val jdbcProvider = aJdbcProvider1
     }
     fun api(): Routing.() -> Unit = {
         install(ContentNegotiation) {

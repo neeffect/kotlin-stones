@@ -6,6 +6,7 @@ import io.vavr.Lazy
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.kstones.db.DbSequence
+import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.security.UserRole
 
 /**
@@ -22,11 +23,13 @@ open class StonesModule {
 
     open val jdbcConfig  = DbConnection.jdbcConfig
 
+    open val jdbcProvider  = JDBCProvider(jdbcConfig)
+
     open val stoneRepo by lazy { StoneRepo(seq) }
 
     open val stoneService by lazy { StoneService(stoneRepo) }
 
-    open val stoneRest by lazy { StoneRest(stoneService, jdbcConfig) }
+    open val stoneRest by lazy { StoneRest(stoneService, jdbcProvider) }
 
     object SecurityRoles {
         val writer = UserRole("writer")

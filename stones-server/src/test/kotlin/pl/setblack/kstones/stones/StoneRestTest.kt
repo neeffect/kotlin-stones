@@ -12,6 +12,7 @@ import io.ktor.server.testing.setBody
 import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.some
+import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.security.test.TestDB
 import pl.setblack.nee.web.test.TestWebContext
 
@@ -24,7 +25,7 @@ internal class StoneRestTest : DescribeSpec({
             testDb.addUser("editor","editor",List.of("writer") )
             TestStonesDbSchema.updateDbSchema(testDb.connection)
             val testStonesModule = object : StonesModule() {
-                override val jdbcConfig = testDb.jdbcConfig
+                override val jdbcProvider: JDBCProvider = JDBCProvider(testDb.connection)
             }
             val stoneService = testStonesModule.stoneRest
             val engine = TestApplicationEngine(testWeb.testEnv)
