@@ -35,9 +35,10 @@ class App : RComponent<RProps, AppState>() {
             +"Here I am."
         }
         ul {
+
             for (stone in state.stones) {
                 li {
-                    + stone.name
+                    + stone.data.name
                 }
             }
         }
@@ -51,7 +52,7 @@ suspend fun fetchStones(): List<Stone> = coroutineScope {
             .await()
             .json()
             .await()
-            .unsafeCast<List<Stone>>()
-    }.await() //this seems stupid
+            .unsafeCast<Array<Stone>>()
+    }.await().toList() //this await seems stupid
 }
 

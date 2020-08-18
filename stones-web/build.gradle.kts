@@ -1,5 +1,6 @@
 plugins {
     id("org.jetbrains.kotlin.js") version "1.3.72"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.72"
 }
 
 group = "org.example"
@@ -33,6 +34,8 @@ dependencies {
 
     //Coroutines (chapter 8)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+    implementation("io.github.gciatto:kt-math:0.1.3")
+    //implementation(npm("kt-math", "0.1.3"))
 }
 
 configure<JavaPluginConvention> {

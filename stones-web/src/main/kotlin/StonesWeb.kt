@@ -1,6 +1,7 @@
 //import kotlinx.css.*
 //import kotlinx.html.js.onClickFunction
 import react.RState
+import org.gciatto.kt.math.BigDecimal
 
 
 external interface AppState : RState {
@@ -8,4 +9,7 @@ external interface AppState : RState {
 }
 
 
-data class Stone(val id: Long, val name: String)
+data class Stone(val id: Long, val data: StoneData)
+
+data class StoneData(val name: String, val price: BigDecimal)
+
