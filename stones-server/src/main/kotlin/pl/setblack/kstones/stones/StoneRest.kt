@@ -1,24 +1,17 @@
 package pl.setblack.kstones.stones
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.ContentNegotiation
-import io.ktor.jackson.jackson
-import io.ktor.request.receive
-import io.ktor.response.respondText
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
-import io.ktor.routing.put
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.jackson.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
-import pl.setblack.kstones.db.DbConnection
 import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.ctx.web.WebContext
-import pl.setblack.nee.effects.jdbc.JDBCConfig
 import pl.setblack.nee.effects.jdbc.JDBCProvider
-import java.math.BigDecimal
 
 class StoneRest(
     private val stoneService: StoneService,
