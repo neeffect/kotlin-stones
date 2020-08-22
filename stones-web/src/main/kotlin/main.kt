@@ -9,6 +9,7 @@ import kotlinx.html.js.onClickFunction
 import org.gciatto.kt.math.BigDecimal
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
+import org.w3c.fetch.Response
 import react.dom.*
 import react.setState
 import kotlin.js.Promise
@@ -62,8 +63,8 @@ class App : RComponent<RProps, AppState>() {
 
 fun fetchStones(): Promise<List<Stone>> =
     window.fetch("/api/stones")
-        .then { it.json() }
-        .then { it.unsafeCast<Array<Stone>>() }
+        .then(Response::json)
+        .then { it as Array<Stone> }
         .then { it.toList() }
 
 suspend fun addStone(): Long = coroutineScope {
