@@ -23,14 +23,13 @@ class App : RComponent<RProps, AppState>() {
 
     override fun AppState.init() {
         stones = listOf()
-        val mainScope = MainScope()
-        mainScope.launch {
-            val loadedStones = fetchStones()
-            setState {
-                stones = loadedStones
-            }
-        }
 
+        fetchStones()
+            .then { loadedStones ->
+                setState {
+                    stones = loadedStones
+                }
+            }
     }
 
     override fun RBuilder.render() {
@@ -61,32 +60,28 @@ class App : RComponent<RProps, AppState>() {
 }
 
 
-suspend fun fetchStones(): List<Stone> = coroutineScope {
-    async {
-        window.fetch("/api/stones")
-            .await()
-            .json()
-            .await()
-            .unsafeCast<Array<Stone>>()
-    }.await().toList() //this await seems stupid
-}
-
-
+fun fetchStones(): Promise<List<Stone>> =
+    window.fetch("/api/stones")
+        .then { it.json() }
+        .then { it.unsafeCast<Array<Stone>>() }
+        .then { it.toList() }
 
 suspend fun addStone(): Long = coroutineScope {
     async {
         val newStone = StoneData("some", BigDecimal(5.4))
-        window.fetch("/api/stones", RequestInit(method = "POST",
-            headers = Headers().apply {
-                set("Content-Type", "application/json")
-                set("Authorization","Basic ZWRpdG9yOmVkaXRvcg==")
-            },
-            body = JSON.stringify(newStone) { key, value ->
-                when (value ) {
-                    is BigDecimal -> value.toString()
-                        else ->  value
-                }
-            } ))
+        window.fetch(
+            "/api/stones", RequestInit(method = "POST",
+                headers = Headers().apply {
+                    set("Content-Type", "application/json")
+                    set("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
+                },
+                body = JSON.stringify(newStone) { key, value ->
+                    when (value) {
+                        is BigDecimal -> value.toString()
+                        else -> value
+                    }
+                })
+        )
             .await()
             .json()
             .await()
