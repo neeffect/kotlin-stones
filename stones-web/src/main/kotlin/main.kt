@@ -1,50 +1,44 @@
-import react.RBuilder
-import react.RComponent
-import react.RProps
-import kotlin.browser.document
-import kotlin.browser.window
+import com.ccfraser.muirwik.components.card.mCard
+import com.ccfraser.muirwik.components.card.mCardHeader
+import com.ccfraser.muirwik.components.mContainer
+import kotlinx.browser.document
+import kotlinx.browser.window
+
 import kotlinx.coroutines.*
-import kotlinx.html.js.onChangeFunction
+
 import kotlinx.html.js.onClickFunction
 import org.gciatto.kt.math.BigDecimal
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
+import react.*
 import react.dom.*
-import react.setState
 import kotlin.js.Promise
 
 fun main() {
     render(document.getElementById("root")) {
-        child(App::class) {}
+        child(app) {}
     }
 }
 
-class App : RComponent<RProps, AppState>() {
+data class  StonesState(val stones: List<Stone> = listOf())
 
-    override fun AppState.init() {
-        stones = listOf()
 
-        fetchStones()
-            .then { loadedStones ->
-                setState {
-                    stones = loadedStones
-                }
-            }
+
+val app = functionalComponent<RProps> {
+    val (stones, setStones) = useState (StonesState())
+
+    useEffect(emptyList()) {
+        fetchStones().then {
+            setStones(stones.copy(stones  = it))
+        }
     }
 
-    override fun RBuilder.render() {
+    div {
         h1 {
-            +"Here I am."
+            +"Here I am.(F1)"
         }
-        ul {
 
-            for (stone in state.stones) {
-                li {
-                    +stone.data.name
-                }
-            }
-        }
 
         button {
             +"Add stone"
@@ -53,12 +47,76 @@ class App : RComponent<RProps, AppState>() {
                     val mainScope = MainScope()
                     mainScope.launch {
                         addStone()
+                        fetchStones().then {
+                            setStones(stones.copy(stones  = it))
+                        }
                     }
                 }
             }
         }
+
+        mContainer{
+            mCard {
+                ul {
+
+                    for (stone in stones.stones) {
+                        li {
+                            +stone.data.name
+                        }
+                    }
+                }
+            }
+            mCard  {
+                mCardHeader {
+                    title("add new stone")
+                }
+            }
+
+        }
     }
+
 }
+//
+//class App : RComponent<RProps, AppState>() {
+//
+//    override fun AppState.init() {
+//        stones = listOf()
+//
+//        fetchStones()
+//            .then { loadedStones ->
+//                setState {
+//                    stones = loadedStones
+//                }
+//            }
+//
+//    }
+//
+//    override fun RBuilder.render() {
+//        h1 {
+//            +"Here I am."
+//        }
+//        ul {
+//
+//            for (stone in state.stones) {
+//                li {
+//                    +stone.data.name
+//                }
+//            }
+//        }
+//
+//        button {
+//            +"Add stone"
+//            attrs {
+//                onClickFunction = { _ ->
+//                    val mainScope = MainScope()
+//                    mainScope.launch {
+//                        addStone()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 
 fun fetchStones(): Promise<List<Stone>> =
