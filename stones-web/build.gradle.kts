@@ -1,44 +1,90 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.utils.addToStdlib.min
+
 plugins {
-    id("org.jetbrains.kotlin.js") version "1.3.72"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.72"
+    val kotlinVersion = "1.4.0"
+    id("org.jetbrains.kotlin.js") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
 }
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
-    mavenCentral()
     jcenter()
+    mavenLocal()
+    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-eap") }
+    maven { setUrl("https://dl.bintray.com/kotlin/kotlin-dev") }
+    maven { setUrl("http://dl.bintray.com/kotlin/kotlin-js-wrappers") }
+    maven("https://dl.bintray.com/cfraser/muirwik")
 }
 
 dependencies {
-    implementation(kotlin("stdlib-js"))
+    val kotlinJsVersion = "1.4.0"
+    val kotlinJsLibVersion = "pre.112-kotlin-${kotlinJsVersion}"
+    implementation(kotlin("stdlib-js", kotlinJsVersion))
 
     //React, React DOM + Wrappers (chapter 3)
-    implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
-    implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
-    implementation(npm("react", "16.13.1"))
-    implementation(npm("react-dom", "16.13.1"))
+    implementation("org.jetbrains:kotlin-react:16.13.1-${kotlinJsLibVersion}")
+    implementation("org.jetbrains:kotlin-react-dom:16.13.1-${kotlinJsLibVersion}")
+    //implementation(npm("react", "16.13.1"))
+    //implementation(npm("react-dom", "16.13.1"))
 
-    //Kotlin Styled (chapter 3)
-    implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
-    implementation(npm("styled-components"))
-    implementation(npm("inline-style-prefixer"))
+    implementation("org.jetbrains:kotlin-styled:1.0.0-${kotlinJsLibVersion}")
+    //implementation(npm("styled-components","5.2.0"))
+    //implementation(npm("inline-style-prefixer","6.0.0"))
 
-    //Video Player (chapter 7)
-    implementation(npm("react-player"))
 
-    //Share Buttons (chapter 7)
-    implementation(npm("react-share"))
-
-    //Coroutines (chapter 8)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.8")
     implementation("io.github.gciatto:kt-math:0.1.3")
-    //implementation(npm("kt-math", "0.1.3"))
+
+    implementation("com.ccfraser.muirwik:muirwik-components:0.5.1")
+    //implementation("org.jetbrains:kotlin-react:VERSION")
+    //implementation("org.jetbrains:kotlin-react-dom:VERSION")
+
+    implementation("org.jetbrains:kotlin-styled:1.0.0-${kotlinJsLibVersion}")
+    implementation("org.jetbrains:kotlin-css-js:1.0.0-${kotlinJsLibVersion}")
+    implementation("org.jetbrains:kotlin-css:1.0.0-${kotlinJsLibVersion}")
+    implementation(npm("@material-ui/core", "^4.9.14"))
+
+    //read about
+    //implementation(npm("react-hot-loader", "^4.12.20"))
+
+    implementation(npm("react-hot-loader", "^4.12.20"))
+
+
+    implementation(devNpm("webpack-bundle-analyzer", "^3.8.0"))
 }
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_14
 }
-kotlin.target.browser { }
+kotlin {
+    println("defaultJsCompileType is $defaultJsCompilerType")
+    defaultJsCompilerType = KotlinJsCompilerType.LEGACY  // The default
+//        defaultJsCompilerType = KotlinJsCompilerType.IR
+//        defaultJsCompilerType = KotlinJsCompilerType.BOTH
+
+    js {
+        browser {
+            useCommonJs()
+
+            webpackTask {
+                cssSupport.enabled = true
+            }
+
+            runTask {
+                cssSupport.enabled = true
+            }
+
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                    webpackConfig.cssSupport.enabled = true
+                }
+            }
+        }
+        binaries.executable()
+    }
+}
+
