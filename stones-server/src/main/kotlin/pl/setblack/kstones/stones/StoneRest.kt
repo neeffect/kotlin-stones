@@ -37,7 +37,7 @@ class StoneRest(
             val newStone = call.receive<StoneData>()
             println(newStone)
             val stoneAdded =
-                    stoneService.addStone(StoneData("irre", 10.99.toBigDecimal()))
+                    stoneService.addStone(newStone)
 
             webContext.create(call).serveMessage(async { stoneAdded }, Unit)
         }
