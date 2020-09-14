@@ -7,10 +7,14 @@ import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemIcon
+import com.ccfraser.muirwik.components.styles.Theme
+import com.ccfraser.muirwik.components.styles.ThemeOptions
+import com.ccfraser.muirwik.components.styles.createMuiTheme
 import kotlinx.browser.document
 import kotlinx.browser.window
 
 import kotlinx.coroutines.*
+import kotlinx.css.Color
 
 import kotlinx.html.js.onClickFunction
 import org.gciatto.kt.math.BigDecimal
@@ -23,7 +27,26 @@ import kotlin.js.Promise
 
 fun main() {
     render(document.getElementById("root")) {
-        child(app) {}
+
+        val themeOptions: ThemeOptions =js("({\n" +
+                "  palette: {\n" +
+                "    primary: {\n" +
+                "      main: '#ffee58',\n" +
+                "    },\n" +
+                "    secondary: {\n" +
+                "      main: '#29b6f6',\n" +
+                "    },\n" +
+                "  },\n" +
+                "})")
+//        themeOptions.palette?.type = themeColor
+//        themeOptions.palette?.primary.main = Colors.Yellow.accent400.toString()
+//        themeOptions.palette?.secondary.main = "#29b6f6"
+        // Create a new theme with the default colours (darker primary colours than the demo)
+        val theme: Theme = createMuiTheme(themeOptions)
+        mThemeProvider(theme){
+            child(app) {}
+        }
+
     }
 }
 
@@ -121,7 +144,7 @@ fun fetchStones(): Promise<List<Stone>> =
 
 suspend fun addStone(name:String): Long = coroutineScope {
     async {
-        val newStone = StoneData(name, BigDecimal(5.4))
+        val newStone = StoneData(name, BigDecimal.of("5.4"))
         window.fetch(
             "/api/stones", RequestInit(method = "POST",
                 headers = Headers().apply {
