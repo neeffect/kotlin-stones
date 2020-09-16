@@ -40,8 +40,7 @@ internal class StoneServiceTest : DescribeSpec({
             it("should be able to add stone") {
                 TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
                     TestStonesDbSchema.updateDbSchema(testDb.connection). use {
-                        val editorUser =
-                            testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
+                        testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
 
                         val result =
                             stoneService.addStone(testStone).perform(editorCall)(Unit)

@@ -1,5 +1,6 @@
 rootProject.name = 'kotlin-stones'
 
+include 'stones-common'
 include 'stones-server'
 include 'stones-web'
 

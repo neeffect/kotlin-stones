@@ -19,6 +19,8 @@ import org.gciatto.kt.math.BigDecimal
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
+import pl.setblack.kotlinStones.Stone
+import pl.setblack.kotlinStones.StoneData
 import react.*
 import react.dom.*
 import kotlin.js.Promise

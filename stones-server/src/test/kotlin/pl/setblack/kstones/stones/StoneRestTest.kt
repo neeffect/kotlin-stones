@@ -74,7 +74,8 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content
 
-                val stones = testStonesModule.objectMapper.readValue<List<StoneId>>(stonesString, object : TypeReference<List<Stone>>() {
+                val stones = testStonesModule.objectMapper.readValue<List<Stone>>(stonesString,
+                    object : TypeReference<List<Stone>>() {
                 })
                 stones.size() should be(2)
             }

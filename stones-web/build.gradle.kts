@@ -5,9 +5,9 @@ group = "pl.setblack"
 version = "0.0.1"
 
 plugins {
-    val kotlinVersion = "1.4.0"
-    id("org.jetbrains.kotlin.js") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
+
+    id("org.jetbrains.kotlin.js")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 repositories {
@@ -24,6 +24,7 @@ dependencies {
     val kotlinJsVersion = "pre.112-kotlin-$kotlinVersion"
     val kotlinReactVersion = "16.13.1-$kotlinJsVersion"
 
+    implementation(project(":stones-common"))
     implementation(kotlin("stdlib-js", kotlinVersion))
 
     implementation("org.jetbrains", "kotlin-react", kotlinReactVersion)
