@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        nee_version = '0.2.0-SNAPSHOT'
+        nee_version = '0.3.1'
         h2_version = '1.4.200'
         ext.ktor_version = '1.4.0'
         db = [

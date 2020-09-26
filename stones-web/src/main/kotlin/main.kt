@@ -25,9 +25,15 @@ import react.*
 import react.dom.*
 import kotlin.js.Promise
 
+//external interface AppProps: RProps {
+//    var user: User
+//}
+data class AppProps (val user: User) : RProps
+data class User(val login : String , val pass: String)
+
+
 fun main() {
     render(document.getElementById("root")) {
-
 
         val themeOptions :dynamic = js ("{}")
         themeOptions.palette = js("{}")
@@ -36,124 +42,24 @@ fun main() {
         themeOptions.palette.secondary = js("{}")
         themeOptions.palette.secondary.main = "#29b6f6"
         val theme: Theme = createMuiTheme(themeOptions)
+
+        val appState  = AppProps(User("nono1", "nono2"))
         mThemeProvider(theme){
-            child(app) {}
+            child(app, appState) {
+               // this.attrs.user = User("nono", "nono")
+            }
         }
 
     }
 }
 
-data class  StonesState(val stones: List<Stone> = listOf(), val newName:String = "")
 
 
+val app = functionalComponent<AppProps> {props->
 
-val app = functionalComponent<RProps> {
-    val (stones, setStones) = useState (StonesState())
+    child(stonesList, props) {
 
-
-
-    useEffect(emptyList()) {
-        fetchStones().then {
-            setStones(stones.copy(stones  = it))
-        }
-    }
-
-    div {
-        h1 {
-            +"Here I am.(F1)"
-        }
-
-
-        button {
-            +"Add stone"
-            attrs {
-                onClickFunction = { _ ->
-                    val mainScope = MainScope()
-                    mainScope.launch {
-                        addStone("no name")
-                        fetchStones().then {
-                            setStones(stones.copy(stones  = it))
-                        }
-                    }
-                }
-            }
-        }
-
-        mContainer{
-            mCard {
-                mCardHeader(title = "existing stones") {
-
-                }
-                mList {
-
-                    for (stone in stones.stones) {
-                        mListItem {
-                            mListItemIcon {
-                                mIcon("drafts")
-                            }
-                            +stone.data.name
-                        }
-                    }
-                }
-            }
-            mCard(raised = true) {
-                mCardHeader(title = "add new stone")  {
-
-                }
-
-                mTextField(label = "Stone Name", value = stones.newName,  onChange = { event ->
-                    setStones(stones.copy(newName = event.targetInputValue))
-                }) {
-                    //css(textField)
-                }
-
-                mCardActions {
-                    mButton("add stone", MColor.primary,variant = MButtonVariant.contained,onClick = { _ ->
-                        val mainScope = MainScope()
-                        mainScope.launch {
-                            addStone(stones.newName)
-                            fetchStones().then {
-                                setStones(stones.copy(stones  = it))
-                            }
-                        }
-                    }) {
-
-                    }
-                }
-            }
-
-
-        }
     }
 
 }
 
-
-fun fetchStones(): Promise<List<Stone>> =
-    window.fetch("/api/stones")
-        .then(Response::json)
-        .then { it as Array<Stone> }
-        .then { it.toList() }
-
-suspend fun addStone(name:String): Long = coroutineScope {
-    async {
-        val newStone = StoneData(name, BigDecimal.of("5.4"))
-        window.fetch(
-            "/api/stones", RequestInit(method = "POST",
-                headers = Headers().apply {
-                    set("Content-Type", "application/json")
-                    set("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
-                },
-                body = JSON.stringify(newStone) { key, value ->
-                    when (value) {
-                        is BigDecimal -> value.toString()
-                        else -> value
-                    }
-                })
-        )
-            .await()
-            .json()
-            .await()
-            .unsafeCast<Long>()
-    }.await()
-}
