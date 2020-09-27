@@ -15,7 +15,6 @@ import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
 import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneData
-import react.RProps
 import react.dom.div
 import react.functionalComponent
 import react.useEffect
@@ -28,7 +27,7 @@ data class  StonesState(val stones: List<Stone> = listOf(), val newName:String =
 
 
 val stonesList = functionalComponent<AppProps> {props ->
-    val user = props.user
+    val user = props.state.user
     val (stones, setStones) = useState (StonesState())
 
 
@@ -42,7 +41,7 @@ val stonesList = functionalComponent<AppProps> {props ->
     div {
         mContainer{
             mCard {
-                mCardHeader(title = "existing stones : ${user.login}") {
+                mCardHeader(title = "existing stones : ${user?.login}") {
 
                 }
                 mList {

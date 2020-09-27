@@ -5,9 +5,7 @@ import react.RState
 
 
 
-external interface AppState : RState {
-    var stones: List<Stone>
-}
+
 
 
 

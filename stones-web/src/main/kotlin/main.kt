@@ -25,12 +25,12 @@ import react.*
 import react.dom.*
 import kotlin.js.Promise
 
-//external interface AppProps: RProps {
-//    var user: User
-//}
-data class AppProps (val user: User) : RProps
+
+data class AppState (val user: User? = null)
+
 data class User(val login : String , val pass: String)
 
+data class AppProps(val state: AppState, val stateChange : (AppState)->Unit) : RProps
 
 fun main() {
     render(document.getElementById("root")) {
@@ -43,10 +43,10 @@ fun main() {
         themeOptions.palette.secondary.main = "#29b6f6"
         val theme: Theme = createMuiTheme(themeOptions)
 
-        val appState  = AppProps(User("nono1", "nono2"))
+
         mThemeProvider(theme){
-            child(app, appState) {
-               // this.attrs.user = User("nono", "nono")
+            child(app) {
+
             }
         }
 
@@ -55,10 +55,20 @@ fun main() {
 
 
 
-val app = functionalComponent<AppProps> {props->
+val app = functionalComponent<RProps> {props->
+    val (appState, setAppState) = useState (AppState())
+    child(stonesList, AppProps(appState, setAppState)) {
 
-    child(stonesList, props) {
+    }
+    mCard {
+        mCardHeader(title = "maybe login") {
 
+        }
+        mCardActions {
+            mButton("lolgggme", onClick = {
+                setAppState(appState.copy(user = User("nono", "nnn")))
+            })
+        }
     }
 
 }
