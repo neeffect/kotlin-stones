@@ -4,6 +4,8 @@ import com.ccfraser.muirwik.components.button.mButton
 import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardHeader
+import com.ccfraser.muirwik.components.dialog.mDialog
+import com.ccfraser.muirwik.components.dialog.mDialogTitle
 import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemIcon
@@ -13,6 +15,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 
 import kotlinx.coroutines.*
+import kotlinx.html.InputType
 
 import kotlinx.html.js.onClickFunction
 import org.gciatto.kt.math.BigDecimal
@@ -25,10 +28,12 @@ import react.*
 import react.dom.*
 import kotlin.js.Promise
 
+data class AppState (val user: User? = null, val loginDialog: Boolean = false)
 
-data class AppState (val user: User? = null)
-
-data class User(val login : String , val pass: String)
+data class User(val login : String , val pass: String) {
+    fun baseAuth() =
+        window.btoa("${login}:${pass}")
+}
 
 data class AppProps(val state: AppState, val stateChange : (AppState)->Unit) : RProps
 
@@ -53,11 +58,16 @@ fun main() {
     }
 }
 
-
-
 val app = functionalComponent<RProps> {props->
     val (appState, setAppState) = useState (AppState())
     child(stonesList, AppProps(appState, setAppState)) {
+
+    }
+    child(loginDialog, LoginDialog(appState.loginDialog) { user ->
+        setAppState(
+            appState.copy(user = user, loginDialog = false)
+        )
+    }) {
 
     }
     mCard {
@@ -66,10 +76,11 @@ val app = functionalComponent<RProps> {props->
         }
         mCardActions {
             mButton("lolgggme", onClick = {
-                setAppState(appState.copy(user = User("nono", "nnn")))
+                setAppState(appState.copy(loginDialog = true))
             })
         }
     }
+
 
 }
 
