@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        nee_version = '0.3.1'
+        nee_version = '0.3.2-LOCAL'
         h2_version = '1.4.200'
         ext.ktor_version = '1.4.0'
         db = [
@@ -57,7 +57,7 @@ dependencies {
     implementation group: 'com.mchange', name: 'c3p0', version: '0.9.5.5'
 
     testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.2.5'
-    testImplementation 'io.kotest:kotest-runner-console-jvm:4.1.3.2'
+    //testImplementation 'io.kotest:kotest-runner-console-jvm:4.1.3.2'
 
     testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
     testImplementation "pl.setblack:nee-security-jdbc-test:${nee_version}"

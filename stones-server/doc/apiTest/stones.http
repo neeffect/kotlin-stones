@@ -27,3 +27,16 @@ Authorization: Basic ZWRpdG9yOmVkaXRvcg==
   "name": "Normalny",
   "price": 10.99
 }
+
+
+
+###
+
+POST http://localhost:8080/api/stones
+Content-Type: application/json
+Authorization: Basic weong==
+
+{
+  "name": "Normalny",
+  "price": 10.99
+}

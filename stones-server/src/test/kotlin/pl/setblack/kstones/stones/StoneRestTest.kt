@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.be
 import io.kotest.matchers.should
-import io.ktor.http.HttpMethod
+import io.ktor.http.*
 import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
@@ -37,6 +37,18 @@ internal class StoneRestTest : DescribeSpec({
                     HttpMethod.Get, "/stones"
                 ).response.content
                 stones!! should be("[]")
+            }
+            it ("should fail when adding stones without credentials") {
+                val stonesResponseCode = engine.handleRequest(
+                    HttpMethod.Post, "/stones"
+                ) {
+                    this.setBody("""{"name":"nikt", "price":27.80}""")
+                    this.addHeader("Content-Type", "application/json")
+                    this.addHeader("Authorization", "Basic Wrong")
+                }.response.status()
+
+
+                stonesResponseCode should be(HttpStatusCode.Unauthorized)
             }
             it("should add  stone ") {
 
