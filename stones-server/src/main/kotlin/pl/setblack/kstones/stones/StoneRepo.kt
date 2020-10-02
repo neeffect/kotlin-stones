@@ -10,13 +10,15 @@ import pl.setblack.kstones.dbModel.public_.tables.Stones
 import pl.setblack.kstones.dbModel.public_.tables.records.StonesRecord
 import pl.setblack.nee.Nee
 import pl.setblack.nee.UANee
-import pl.setblack.nee.ctx.web.WebContext
-import pl.setblack.nee.ctx.web.WebContext.Effects.jdbc
-
-class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
+import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 
 
-    fun readAllStones(): UANee<WebContext, List<Stone>> = Nee.constP(jdbc) { jdbcProvider ->
+class StoneRepo(
+    private  val context: JDBCBasedWebContext,
+    private val seq: SequenceGenerator<Web>) {
+
+
+    fun readAllStones(): UANee<Web, List<Stone>> = Nee.constP(context.effects().jdbc) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         dsl.selectFrom(Stones.STONES)
             .fetchInto(StonesRecord::class.java)
@@ -26,7 +28,7 @@ class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
             }
     }.anyError()
 
-    fun readStone() = Nee.pure(jdbc) { jdbcProvider ->
+    fun readStone() = Nee.pure(context.effects().jdbc) { jdbcProvider ->
         { id: StoneId ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
             val record = dsl.selectFrom(Stones.STONES)
@@ -40,7 +42,7 @@ class StoneRepo(private val seq: SequenceGenerator<WebContext>) {
         addStone(it, newStone)
     }
 
-    private fun addStone(stoneId: Long, newStone: StoneData) = Nee.constP(jdbc) { jdbcProvider ->
+    private fun addStone(stoneId: Long, newStone: StoneData) = Nee.constP(context.effects().jdbc) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         val insertedRows = dsl.insertInto(Stones.STONES)
             .values(stoneId, newStone.name, newStone.price)

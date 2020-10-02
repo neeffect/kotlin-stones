@@ -9,8 +9,9 @@ import pl.setblack.nee.web.test.TestWebContext
 
 internal class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
-        val repo = StoneRepo(DbSequence())
+
         val wc = TestCtx.testCtx()
+        val repo = StoneRepo(TestCtx, DbSequence(TestCtx))
         When(" stone inserted into db") {
             val stone = StoneData("old1", 4.toBigDecimal())
             val insertedStoneId = repo.addNewStone(stone)

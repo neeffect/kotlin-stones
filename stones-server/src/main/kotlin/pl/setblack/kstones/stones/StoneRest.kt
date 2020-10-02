@@ -14,12 +14,12 @@ import pl.setblack.nee.ctx.web.WebContext
 import pl.setblack.nee.effects.jdbc.JDBCProvider
 
 class StoneRest(
+    private val webContext: JDBCBasedWebContext,
     private val stoneService: StoneService,
-    private val aJdbcProvider1: JDBCProvider) {
+    ) {
 
-    val webContext = object  : JDBCBasedWebContext(){
-        override val jdbcProvider = aJdbcProvider1
-    }
+
+
     fun api(): Routing.() -> Unit = {
         install(ContentNegotiation) {
             jackson {
@@ -45,11 +45,13 @@ class StoneRest(
             call.respondText("HELLO WORLD!")
         }
     }
+
+    private fun <E, P, A> async(func: () -> Nee<Web, E, P, A>) =
+        (Nee.constP(webContext.effects().async) { _ -> Unit } as Nee<Web, E, P, Unit>)
+            .flatMap {
+                println("in thread " + Thread.currentThread().name)
+                func()
+            }
 }
 
-fun <E, P, A> async(func: () -> Nee<WebContext, E, P, A>) =
-    (Nee.constP(WebContext.Effects.async) { _ -> Unit } as Nee<WebContext, E, P, Unit>)
-        .flatMap {
-            println("in thread " + Thread.currentThread().name)
-            func()
-        }
+

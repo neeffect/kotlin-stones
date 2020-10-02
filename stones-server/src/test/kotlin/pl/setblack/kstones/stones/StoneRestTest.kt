@@ -12,6 +12,7 @@ import io.ktor.server.testing.setBody
 import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.some
+import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.security.test.TestDB
 import pl.setblack.nee.web.test.TestWebContext
