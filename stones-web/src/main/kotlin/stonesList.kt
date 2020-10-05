@@ -20,7 +20,9 @@ import react.useEffect
 import react.useState
 import kotlin.js.Promise
 
-data class StonesState(val stones: List<Stone> = listOf(), val newName: String = "")
+data class StonesState(
+    val stones: List<Stone> = listOf(),
+    val newName: String = "")
 
 
 val stonesList = functionalComponent<AppProps> { props ->
@@ -51,7 +53,7 @@ val stonesList = functionalComponent<AppProps> { props ->
                     }
                 }
             }
-            mCard(raised = true) {
+            mCard(raised = false) {
                 mCardHeader(title = "add new stone") {
 
                 }

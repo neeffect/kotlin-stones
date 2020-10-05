@@ -12,7 +12,6 @@ import io.ktor.server.testing.setBody
 import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.some
-import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.security.test.TestDB
 import pl.setblack.nee.web.test.TestWebContext
@@ -28,10 +27,10 @@ internal class StoneRestTest : DescribeSpec({
             val testStonesModule = object : StonesModule() {
                 override val jdbcProvider: JDBCProvider = JDBCProvider(testDb.connection)
             }
-            val stoneService = testStonesModule.stoneRest
+            val stoneRest = testStonesModule.stoneRest
             val engine = TestApplicationEngine(testWeb.testEnv)
             engine.start(false)
-            engine.application.routing(stoneService.api())
+            engine.application.routing(stoneRest.api())
             it("should display no stones when empty") {
 
                 val stones = engine.handleRequest(

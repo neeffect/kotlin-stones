@@ -1,6 +1,7 @@
 import com.ccfraser.muirwik.components.*
 import com.ccfraser.muirwik.components.button.MButtonVariant
 import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.button.mIconButton
 import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardHeader
@@ -15,6 +16,9 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 
 import kotlinx.coroutines.*
+import kotlinx.css.marginLeft
+import kotlinx.css.marginRight
+import kotlinx.css.px
 import kotlinx.html.InputType
 
 import kotlinx.html.js.onClickFunction
@@ -26,9 +30,13 @@ import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneData
 import react.*
 import react.dom.*
+import services.loginUser
+import styled.css
 import kotlin.js.Promise
 
-data class AppState (val user: User? = null, val loginDialog: Boolean = false)
+data class AppState (val user: User? = null, val loginDialog: Boolean = false) {
+    fun loggedIn() : Boolean = user != null
+}
 
 data class User(val login : String , val pass: String) {
     fun baseAuth() =
@@ -60,13 +68,21 @@ fun main() {
 
 val app = functionalComponent<RProps> {props->
     val (appState, setAppState) = useState (AppState())
+
+    child(appBar, AppProps(appState, setAppState)) {
+
+    }
     child(stonesList, AppProps(appState, setAppState)) {
 
     }
     child(loginDialog, LoginDialog(appState.loginDialog) { user ->
-        setAppState(
-            appState.copy(user = user, loginDialog = false)
-        )
+        val stateWithUser = appState.copy(user = user, loginDialog = false)
+        loginUser(AppProps(stateWithUser, setAppState)).then {
+            println("logged")
+            setAppState(
+                stateWithUser
+            )
+        }
     }) {
 
     }

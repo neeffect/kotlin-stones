@@ -25,6 +25,7 @@ val loginDialog = functionalComponent<LoginDialog> { props ->
         mDialogActions {
             mButton("login", onClick = {
                 props.setUser( User(login,password))
+
             })
         }
     }

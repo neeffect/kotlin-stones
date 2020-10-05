@@ -7,7 +7,7 @@ import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.vavr.jackson.datatype.VavrModule
@@ -29,6 +29,9 @@ fun main() {
             }
         }
         routing(stonesModule.stoneRest.api())
+        routing(stonesModule.context.sysApi())
     }
     server.start(wait = true)
 }
+
+
