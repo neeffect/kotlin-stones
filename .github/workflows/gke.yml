@@ -64,7 +64,7 @@ jobs:
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
-          cd stone-web/infra
+          cd stone-sweb/infra
           ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ../../kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$IMAGE
