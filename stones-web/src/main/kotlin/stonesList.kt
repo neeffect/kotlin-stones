@@ -24,7 +24,6 @@ data class StonesState(
     val stones: List<Stone> = listOf(),
     val newName: String = "")
 
-
 val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
     val (stones, setStones) = useState(StonesState())

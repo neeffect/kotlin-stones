@@ -10,3 +10,13 @@ GET http://localhost:3000/sys/hasRoles?roles="aa"
 ###
 
 GET http://localhost:3000/sys/currentUser
+
+
+###
+
+GET http://localhost:3000/sys/logs
+
+
+###
+
+GET http://localhost:3000/sys/report

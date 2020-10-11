@@ -10,8 +10,7 @@ import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.JDBCBasedWebContext
-import pl.setblack.nee.ctx.web.WebContext
-import pl.setblack.nee.effects.jdbc.JDBCProvider
+import pl.setblack.nee.effects.monitoring.CodeNameFinder
 
 class StoneRest(
     private val webContext: JDBCBasedWebContext,
@@ -46,12 +45,19 @@ class StoneRest(
         }
     }
 
-    private fun <E, P, A> async(func: () -> Nee<Web, E, P, A>) =
-        (Nee.constP(webContext.effects().async) { _ -> Unit } as Nee<Web, E, P, Unit>)
-            .flatMap {
-                println("in thread " + Thread.currentThread().name)
-                func()
+    private fun <E, P, A> async(func: () -> Nee<Web, E, P, A>) : Nee<Web, Any, P , A> =
+            CodeNameFinder.guessCodePlaceName(2).let { whereItIsDefined ->
+                Nee.pure(webContext.effects().async) { r: Web ->
+                    { p: P ->
+                        r.getTrace().putNamedPlace(whereItIsDefined)
+                        func()
+                    }
+                }
+                    .flatMap { it.anyError() }
             }
+
+
+
 }
 
 
