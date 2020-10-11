@@ -40,7 +40,7 @@ dependencies {
 
     implementation(devNpm("webpack-bundle-analyzer", "^3.8.0"))
 
-    implementation("com.ccfraser.muirwik:muirwik-components:0.6.44")
+    implementation("com.ccfraser.muirwik:muirwik-components:0.6.0")
 
     implementation("io.github.gciatto:kt-math:0.1.3")
 
