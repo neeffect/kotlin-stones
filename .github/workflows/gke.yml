@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: cluster1
+  GKE_CLUSTER: cluster-1
   GKE_ZONE: europe-west3-b
   IMAGE: stones-web
 
