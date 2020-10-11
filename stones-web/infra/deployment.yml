@@ -24,3 +24,6 @@ spec:
               cpu: 100m
             limits:
               cpu: 100m
+  selector:
+    matchLabels:
+      app: stones-web
