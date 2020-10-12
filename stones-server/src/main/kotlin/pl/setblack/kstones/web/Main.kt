@@ -12,7 +12,12 @@ import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.vavr.jackson.datatype.VavrModule
+import pl.setblack.kstones.db.DbConnection.jdbcConfig
+import pl.setblack.kstones.db.initializeDb
 import pl.setblack.kstones.stones.StonesModule
+import pl.setblack.nee.Nee
+import java.sql.Driver
+import java.sql.DriverManager
 
 fun main() {
     val stonesModule = StonesModule()
@@ -37,6 +42,14 @@ fun main() {
             }
         }
         routing(stonesModule.context.sysApi())
+    }
+
+    DriverManager.getConnection(
+        jdbcConfig.url,
+        jdbcConfig.user,
+        jdbcConfig.password
+    ).use {
+        initializeDb(it)
     }
     server.start(wait = true)
 }

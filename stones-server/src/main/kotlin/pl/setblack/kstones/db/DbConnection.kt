@@ -1,6 +1,11 @@
 package pl.setblack.kstones.db
 
+import liquibase.Liquibase
+import liquibase.database.DatabaseFactory
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.ClassLoaderResourceAccessor
 import pl.setblack.nee.effects.jdbc.JDBCConfig
+import java.sql.Connection
 
 object DbConnection {
     val jdbcConfig = JDBCConfig(
@@ -10,7 +15,11 @@ object DbConnection {
         password = ""
     )
 
-   // fun createDbConnection()= TODO()
 
+}
 
+fun initializeDb(dbConnection:Connection)  {
+    val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dbConnection))
+    val liquibaseChangeLog = Liquibase("db/db.changelog-master.xml", ClassLoaderResourceAccessor(), database)
+    liquibaseChangeLog.update(liquibase.Contexts(), liquibase.LabelExpression())
 }

@@ -19,7 +19,7 @@ Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 
 ###
 
-POST http://localhost:8080/api/stones
+POST http://localhost:3000/api/stones
 Content-Type: application/json
 Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 
