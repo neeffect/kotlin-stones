@@ -78,7 +78,6 @@ val app = functionalComponent<RProps> {props->
     child(loginDialog, LoginDialog(appState.loginDialog) { user ->
         val stateWithUser = appState.copy(user = user, loginDialog = false)
         loginUser(AppProps(stateWithUser, setAppState)).then {
-            println("logged")
             setAppState(
                 stateWithUser
             )

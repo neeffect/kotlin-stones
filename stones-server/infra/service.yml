@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: stones-server-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 3000
       targetPort: 3000

@@ -4,7 +4,7 @@ buildscript {
         h2_version = '1.4.200'
         ext.ktor_version = '1.4.0'
         db = [
-                url     : 'jdbc:h2:~/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET',
+                url     : "jdbc:h2:${projectDir}/build/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET",
                 user    : 'sa',
                 password: ''
         ]
