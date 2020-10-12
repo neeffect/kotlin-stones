@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+
+    }
+}
 rootProject.name = 'kotlin-stones'
 
 include 'stones-common'
