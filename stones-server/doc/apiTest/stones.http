@@ -40,3 +40,7 @@ Authorization: Basic weong==
   "name": "Normalny",
   "price": 10.99
 }
+
+
+###
+GET http://localhost:3000/

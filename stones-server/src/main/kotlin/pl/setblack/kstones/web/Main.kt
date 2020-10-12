@@ -7,7 +7,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
-import io.ktor.response.respond
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -40,7 +40,11 @@ fun main() {
             route("api") {
                 stonesModule.stoneRest.api()()
             }
+            get("/"){
+                call.respondText ("ok")
+            }
         }
+
         routing(stonesModule.context.sysApi())
     }
 
