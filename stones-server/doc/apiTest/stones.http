@@ -1,4 +1,4 @@
-GET http://localhost:3000/stones
+GET http://localhost:3000/api/stones
 
 <> 2020-08-06T101641.200.json
 <> 2020-07-28T083601.200.json
@@ -6,7 +6,7 @@ GET http://localhost:3000/stones
 
 
 ###
-POST http://localhost:3000/stones
+POST http://localhost:3000/api/stones
 Content-Type: application/json
 Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 

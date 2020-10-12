@@ -19,7 +19,7 @@ class StoneRest(
 
 
 
-    fun api(): Routing.() -> Unit = {
+    fun api(): Route.() -> Unit = {
         install(ContentNegotiation) {
             jackson {
                 this.registerModule(VavrModule())

@@ -1,5 +1,6 @@
 package pl.setblack.kstones.web
 
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -19,7 +20,9 @@ fun main() {
     val server = embeddedServer(Netty, port = 3000) {
         install(ContentNegotiation) {
             jackson {
+                //TODO check if needed
                 this.registerModule(VavrModule())
+                this.registerModule(KotlinModule())
             }
         }
         install(StatusPages) {
@@ -28,7 +31,11 @@ fun main() {
                 call.respond(HttpStatusCode.InternalServerError)
             }
         }
-        routing(stonesModule.stoneRest.api())
+        routing{
+            route("api") {
+                stonesModule.stoneRest.api()()
+            }
+        }
         routing(stonesModule.context.sysApi())
     }
     server.start(wait = true)
