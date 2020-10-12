@@ -21,9 +21,9 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              cpu: 100m
+              cpu: 250m
             limits:
-              cpu: 100m
+              cpu: 1000m
   selector:
     matchLabels:
       app: stones-web
