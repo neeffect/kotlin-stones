@@ -19,6 +19,10 @@ spec:
           image: gcr.io/PROJECT_ID/IMAGE:TAG
           ports:
             - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /sys/healthCheck
+              port: 3000
           resources:
             requests:
               cpu: 250m
