@@ -15,6 +15,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
     id 'nu.studer.jooq' version '3.0.3'
     id 'org.liquibase.gradle' version '2.0.3'
+    id 'application'
 }
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -134,3 +135,21 @@ tasks.generateStonesJooqSchemaSource.with {
 
 project.tasks.getByName('compileKotlin').dependsOn += 'generateStonesJooqSchemaSource'
 project.tasks.getByName('generateStonesJooqSchemaSource').dependsOn += 'update'
+
+
+application {
+    mainClass = "pl.setblack.kstones.web.MainKt"
+}
+
+
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'pl.setblack.kstones.web.MainKt'
+    }
+    archiveBaseName = 'server-all'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
