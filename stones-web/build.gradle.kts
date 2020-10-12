@@ -5,7 +5,6 @@ group = "pl.setblack"
 version = "0.0.1"
 
 plugins {
-
     id("org.jetbrains.kotlin.js")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -29,8 +28,8 @@ dependencies {
 
     implementation("org.jetbrains", "kotlin-react", kotlinReactVersion)
     implementation("org.jetbrains", "kotlin-react-dom", kotlinReactVersion)
- //   implementation("org.jetbrains", "kotlin-css", "1.0.0-$kotlinJsVersion")
-  //  implementation("org.jetbrains", "kotlin-css-js", "1.0.0-$kotlinJsVersion")
+    //   implementation("org.jetbrains", "kotlin-css", "1.0.0-$kotlinJsVersion")
+    //  implementation("org.jetbrains", "kotlin-css-js", "1.0.0-$kotlinJsVersion")
     implementation("org.jetbrains", "kotlin-styled", "1.0.0-$kotlinJsVersion")
     implementation(npm("react-hot-loader", "^4.12.20"))
 
@@ -92,7 +91,8 @@ tasks.register("webpackStatsFile") {
     fun appendCmdExtIfRequired(executableName: String) = executableName + if (File.separatorChar == '\\') ".cmd" else ""
 
     doLast {
-        val createdWebPackFile = rootProject.buildDir.resolve("js/packages/${rootProject.name}-${project.name}/webpack.config.js")
+        val createdWebPackFile =
+            rootProject.buildDir.resolve("js/packages/${rootProject.name}-${project.name}/webpack.config.js")
         if (!createdWebPackFile.exists()) {
             throw IllegalStateException("Could not create stats file as can't find webpack config file.")
         } else {
@@ -102,16 +102,29 @@ tasks.register("webpackStatsFile") {
             val execResult = exec {
                 workingDir = workingDirFile
                 standardOutput = outputFile.outputStream()
-                commandLine = listOf(appendCmdExtIfRequired("./webpack-cli"), "--config", createdWebPackFile.toString(), "--profile", "--json")
+                commandLine = listOf(
+                    appendCmdExtIfRequired("./webpack-cli"),
+                    "--config",
+                    createdWebPackFile.toString(),
+                    "--profile",
+                    "--json"
+                )
             }
             if (execResult.exitValue == 0) {
                 // The output seems to put a %complete before outputting the json, so we stip that from the file
-                val filteredLines = outputFile.readLines().filter { !(it.substring(0, min(it.length, 5)).contains("%")) }
+                val filteredLines =
+                    outputFile.readLines().filter { !(it.substring(0, min(it.length, 5)).contains("%")) }
                 outputFile.writeText(filteredLines.joinToString("\n"))
                 exec {
                     workingDir = workingDirFile
-                    commandLine = listOf(appendCmdExtIfRequired("./webpack-bundle-analyzer"),
-                        outputFile.toString(), "-m", "static", "-r", outputFile.resolveSibling("webpack-stats-report.html").toString())
+                    commandLine = listOf(
+                        appendCmdExtIfRequired("./webpack-bundle-analyzer"),
+                        outputFile.toString(),
+                        "-m",
+                        "static",
+                        "-r",
+                        outputFile.resolveSibling("webpack-stats-report.html").toString()
+                    )
                 }
             } else {
                 println("webpack-cli stats creation exit value was not zero: ${execResult.exitValue}")

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stones-server
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: stones-server
+    spec:
+      containers:
+        - name: stones-server
+          image: gcr.io/PROJECT_ID/IMAGE:TAG
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 100m
+  selector:
+    matchLabels:
+      app: stones-server
