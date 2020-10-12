@@ -86,17 +86,5 @@ val app = functionalComponent<RProps> {props->
     }) {
 
     }
-    mCard {
-        mCardHeader(title = "maybe login") {
-
-        }
-        mCardActions {
-            mButton("lolgggme", onClick = {
-                setAppState(appState.copy(loginDialog = true))
-            })
-        }
-    }
-
-
 }
 

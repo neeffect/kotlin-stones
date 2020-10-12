@@ -14,3 +14,7 @@ spec:
             backend:
               serviceName: stones-server-service
               servicePort: 3000
+          - path: "/sys/*"
+            backend:
+              serviceName: stones-server-service
+              servicePort: 3000
