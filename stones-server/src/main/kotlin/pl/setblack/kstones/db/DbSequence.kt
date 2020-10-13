@@ -6,8 +6,6 @@ import pl.setblack.kstones.stones.Web
 import pl.setblack.nee.Nee
 import pl.setblack.nee.UANee
 import pl.setblack.nee.ctx.web.JDBCBasedWebContext
-import pl.setblack.nee.ctx.web.WebContext
-import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.effects.tx.TxProvider
 import java.sql.Connection
 

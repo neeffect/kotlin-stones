@@ -91,6 +91,15 @@ internal class StoneRestTest : DescribeSpec({
                 })
                 stones.size() should be(2)
             }
+            it("second stone should be returned ") {
+
+                val stonesString = engine.handleRequest(
+                    HttpMethod.Get, "/stones/2"
+                ).response.content
+
+                val stone = testStonesModule.objectMapper.readValue(stonesString, Stone::class.java)
+                stone.data.name should be("burp")
+            }
         }
     }
 }) {

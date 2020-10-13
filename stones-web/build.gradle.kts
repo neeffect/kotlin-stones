@@ -28,14 +28,8 @@ dependencies {
 
     implementation("org.jetbrains", "kotlin-react", kotlinReactVersion)
     implementation("org.jetbrains", "kotlin-react-dom", kotlinReactVersion)
-    //   implementation("org.jetbrains", "kotlin-css", "1.0.0-$kotlinJsVersion")
-    //  implementation("org.jetbrains", "kotlin-css-js", "1.0.0-$kotlinJsVersion")
     implementation("org.jetbrains", "kotlin-styled", "1.0.0-$kotlinJsVersion")
     implementation(npm("react-hot-loader", "^4.12.20"))
-
-    // Just adding these to get rid of warnings...
-//    implementation(npm("react", "^16.3.1"))
-//    implementation(npm("react-dom", "^16.3.1"))
 
     implementation(devNpm("webpack-bundle-analyzer", "^3.8.0"))
 
@@ -46,7 +40,6 @@ dependencies {
     implementation(npm("@material-ui/core", "^4.9.14"))
     implementation(npm("@material-ui/icons", "^4.9.1"))
 
-    //implementation(npm("@jetbrains/kotlin-extensions", "1.0.1-${kotlinJsVersion}"))
 }
 
 

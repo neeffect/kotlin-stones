@@ -25,7 +25,7 @@ internal class StoneRepoTest : BehaviorSpec({
                             }
                         }.getOrElse(Nee.pure(Option.none()))
                     }.perform(wc)(Unit).toFuture().get()
-                    println("performed")
+                    println("performed $result")
                     result.get().get().data.name shouldBe "old1"
                 }
             }

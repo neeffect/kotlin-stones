@@ -26,12 +26,17 @@ class StoneRest(
                 this.registerModule(KotlinModule())
             }
         }
+        get("/stones/{id}") {
+            val id =  call.parameters["id"]!!.toLong()
+            val stone = stoneService.getStone()
+            webContext.create(call).serveMessage(async { stone }, id)
+        }
         get("/stones") {
             val stones = stoneService
                 .allStones()
             webContext.create(call).serveMessage(async { stones }, Unit)
-
         }
+
         post("/stones"){
             val newStone = call.receive<StoneData>()
             println(newStone)

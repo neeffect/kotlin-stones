@@ -48,6 +48,20 @@ internal class StoneServiceTest : DescribeSpec({
                     }
                 }
             }
+            it("should be able to add and read stone") {
+                TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
+                    TestStonesDbSchema.updateDbSchema(testDb.connection). use {
+                        testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
+
+                        val added =
+                            stoneService.addStone(testStone).perform(editorCall)(Unit)
+
+                        val result = stoneService.getStone().perform(editorCall)(added.toFuture().get().get().get())
+
+                        result.toFuture().get().get().data.name shouldBe ("old1")
+                    }
+                }
+            }
         }
     }
 

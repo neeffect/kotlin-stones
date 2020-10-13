@@ -29,7 +29,8 @@ class StoneRepo(
             }
     }.anyError()
 
-    fun readStone() = Nee.pure(context.effects().jdbc) { jdbcProvider ->
+    fun readStone() = Nee.pure(context.effects().cache
+        .andThen(context.effects().jdbc)) { jdbcProvider ->
         { id: StoneId ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
             val record = dsl.selectFrom(Stones.STONES)

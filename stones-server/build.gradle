@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        nee_version = '0.4.4'
+        nee_version = '0.4.6-LOCAL'
         h2_version = '1.4.200'
         ext.ktor_version = '1.4.0'
         db = [
@@ -37,10 +37,10 @@ dependencies {
     implementation "pl.setblack:nee-ctx-web-ktor:${nee_version}"
     implementation "pl.setblack:nee-jdbc:${nee_version}"
     implementation "pl.setblack:nee-security-jdbc:${nee_version}"
-
+    implementation project(":stones-common")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3"
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-jackson:$ktor_version"

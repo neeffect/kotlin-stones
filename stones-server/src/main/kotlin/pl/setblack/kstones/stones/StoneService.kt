@@ -17,4 +17,6 @@ class StoneService(
     }.anyError().flatMap {
         stoneRepo.addNewStone(newStone)
     }
+
+    fun getStone() = stoneRepo.readStone()
 }
