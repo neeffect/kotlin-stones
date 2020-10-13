@@ -3,6 +3,7 @@ package pl.setblack.kstones.stones
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.vavr.control.Option
+import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.db.DbSequence
 import pl.setblack.nee.Nee
 import pl.setblack.nee.web.test.TestWebContext
@@ -13,7 +14,7 @@ internal class StoneRepoTest : BehaviorSpec({
         val wc = TestCtx.testCtx()
         val repo = StoneRepo(TestCtx, DbSequence(TestCtx))
         When(" stone inserted into db") {
-            val stone = StoneData("old1", 4.toBigDecimal())
+            val stone = StoneData("old1", "gray", 5)
             val insertedStoneId = repo.addNewStone(stone)
             Then("stone can be read") {
                 TestStonesDbSchema.createDb().use {

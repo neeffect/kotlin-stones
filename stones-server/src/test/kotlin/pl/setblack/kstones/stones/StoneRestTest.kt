@@ -12,6 +12,8 @@ import io.ktor.server.testing.setBody
 import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.some
+import pl.setblack.kotlinStones.Stone
+import pl.setblack.kotlinStones.StoneId
 import pl.setblack.nee.effects.jdbc.JDBCProvider
 import pl.setblack.nee.security.test.TestDB
 import pl.setblack.nee.web.test.TestWebContext
@@ -42,7 +44,7 @@ internal class StoneRestTest : DescribeSpec({
                 val stonesResponseCode = engine.handleRequest(
                     HttpMethod.Post, "/stones"
                 ) {
-                    this.setBody("""{"name":"nikt", "price":27.80}""")
+                    this.setBody("""{"name":"nikt", "color":"yellow", "size": 5}""")
                     this.addHeader("Content-Type", "application/json")
                     this.addHeader("Authorization", "Basic Wrong")
                 }.response.status()
@@ -55,7 +57,7 @@ internal class StoneRestTest : DescribeSpec({
                 val stonesString = engine.handleRequest(
                     HttpMethod.Post, "/stones"
                 ) {
-                    this.setBody("""{"name":"nikt", "price":27.80}""")
+                    this.setBody("""{"name":"nikt", "color":"yellow", "size": 5}""")
                     this.addHeader("Content-Type", "application/json")
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content
@@ -69,7 +71,7 @@ internal class StoneRestTest : DescribeSpec({
                 val stonesString = engine.handleRequest(
                     HttpMethod.Post, "/stones"
                 ) {
-                    this.setBody("""{"name":"burp", "price":17.20}""")
+                    this.setBody("""{"name":"burp", "color":"red", "size": 5}""")
                     this.addHeader("Content-Type", "application/json")
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content

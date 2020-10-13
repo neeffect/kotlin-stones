@@ -1,6 +1,8 @@
 package pl.setblack.kotlinStones
-import org.gciatto.kt.math.BigDecimal
 
-data class Stone(val id: Long, val data: StoneData)
 
-data class StoneData(val name: String, val price: BigDecimal)
+typealias  StoneId = Long
+
+data class Stone(val id: StoneId, val data: StoneData)
+
+data class StoneData(val name: String, val color: String, val size: Int)

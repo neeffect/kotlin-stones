@@ -3,11 +3,13 @@ import com.ccfraser.muirwik.components.button.MButtonVariant
 import com.ccfraser.muirwik.components.button.mButton
 import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardActions
+import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.list.mListItemIcon
 import kotlinx.browser.window
+import kotlinx.css.*
 import org.gciatto.kt.math.BigDecimal
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
@@ -18,11 +20,13 @@ import react.dom.div
 import react.functionalComponent
 import react.useEffect
 import react.useState
+import styled.css
+import styled.styledDiv
 import kotlin.js.Promise
 
 data class StonesState(
     val stones: List<Stone> = listOf(),
-    val newName: String = "")
+    val newData: StoneData = StoneData("","",5))
 
 val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
@@ -45,7 +49,18 @@ val stonesList = functionalComponent<AppProps> { props ->
                     for (stone in stones.stones) {
                         mListItem {
                             mListItemIcon {
-                                mIcon("drafts")
+                                mIcon("brightness_5")
+                            }
+
+                            styledDiv {
+                                css {
+                                    val size = (stone.data.size*3).px
+                                    borderRadius = 50.pct
+                                    backgroundColor = Color(stone.data.color)
+                                    width = size
+                                    height = size
+                                }
+                                +" "
                             }
                             +stone.data.name
                         }
@@ -56,17 +71,28 @@ val stonesList = functionalComponent<AppProps> { props ->
                 mCardHeader(title = "add new stone") {
 
                 }
+                mCardContent {
+                    mTextField(label = "Name", value = stones.newData.name, onChange = { event ->
+                        setStones(stones.copy(newData = stones.newData.copy( name= event.targetInputValue)))
+                    }) {
+                    }
 
-                mTextField(label = "Stone Name", value = stones.newName, onChange = { event ->
-                    setStones(stones.copy(newName = event.targetInputValue))
-                }) {
-                    //css(textField)
+                    mTextField(label = "Color", value = stones.newData.color, onChange = { event ->
+                        setStones(stones.copy(newData = stones.newData.copy( color = event.targetInputValue)))
+                    }) {
+                    }
+
+                    mTextField(label = "Size", value = stones.newData.size.toString(), onChange = { event ->
+                        setStones(stones.copy(newData = stones.newData.copy( size = event.targetInputValue.toInt())))
+                    }) {
+                    }
                 }
+
 
                 mCardActions {
                     mButton("add stone", MColor.primary, variant = MButtonVariant.contained, onClick = { _ ->
                         if (user != null) {
-                            addStone(stones.newName, user)
+                            addStone(stones.newData, user)
                                 .then {
                                     fetchStones().then {
                                         setStones(stones.copy(stones = it))
@@ -90,8 +116,7 @@ fun fetchStones(): Promise<List<Stone>> =
         .then { it as Array<Stone> }
         .then { it.toList() }
 
-fun addStone(name: String, user: User): Promise<Long> =
-    StoneData(name, BigDecimal.of("5.4")).let { newStone ->
+fun addStone(newStone: StoneData, user: User): Promise<Long> =
         window.fetch(
             "/api/stones", RequestInit(method = "POST",
                 headers = Headers().apply {
@@ -105,6 +130,6 @@ fun addStone(name: String, user: User): Promise<Long> =
                     }
                 })
         ).then { it.json().unsafeCast<Long>() }
-    }
+
 
 

@@ -8,6 +8,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
+import pl.setblack.kotlinStones.StoneData
 import pl.setblack.nee.Nee
 import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 import pl.setblack.nee.effects.monitoring.CodeNameFinder

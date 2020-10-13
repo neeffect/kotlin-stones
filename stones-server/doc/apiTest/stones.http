@@ -19,7 +19,8 @@ Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 
 {
   "name": "Normalny",
-  "price": 10.99
+  "color": "gray",
+  "size" : 5
 }
 
 <> 2020-08-07T104352.500.txt

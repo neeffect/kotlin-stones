@@ -8,6 +8,7 @@ import pl.setblack.nee.security.test.TestDB
 import pl.setblack.nee.web.test.TestWebContext
 import io.vavr.collection.List
 import io.vavr.kotlin.some
+import pl.setblack.kotlinStones.StoneData
 
 internal class StoneServiceTest : DescribeSpec({
     describe("stone service") {
@@ -67,6 +68,6 @@ internal class StoneServiceTest : DescribeSpec({
 
 }) {
     companion object {
-        val testStone = StoneData("old1", 4.toBigDecimal())
+        val testStone = StoneData("old1", "gray", 5)
     }
 }

@@ -4,7 +4,8 @@ CREATE TABLE  Stones
 (
 	id BIGINT not null, -- flaw in JOOQ or H2 (no returning works_
 	name VARCHAR not null,
-	price DECIMAL,
+	color VARCHAR not null,
+	size INTEGER not null,
 	constraint Stones_pk
 		primary key (ID)
 );
