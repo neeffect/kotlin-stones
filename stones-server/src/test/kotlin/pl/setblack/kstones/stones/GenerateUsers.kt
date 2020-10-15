@@ -1,6 +1,6 @@
 package pl.setblack.kstones.stones
 
-import pl.setblack.nee.security.PBKDF2Hasher
+import dev.neeffect.nee.security.PBKDF2Hasher
 import java.nio.charset.Charset
 import java.util.*
 

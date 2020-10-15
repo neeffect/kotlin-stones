@@ -14,14 +14,13 @@ import io.vavr.control.Option
 import io.vavr.kotlin.some
 import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneId
-import pl.setblack.nee.effects.jdbc.JDBCProvider
-import pl.setblack.nee.security.test.TestDB
-import pl.setblack.nee.web.test.TestWebContext
+import dev.neeffect.nee.effects.jdbc.JDBCProvider
+import dev.neeffect.nee.security.test.TestDB
+import dev.neeffect.nee.web.test.TestWebContextProvider
 
 internal class StoneRestTest : DescribeSpec({
     describe("rest server") {
-
-        val testWeb = object : TestWebContext() {
+        val testWeb = object : TestWebContextProvider() {
         }
         TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
             testDb.addUser("editor","editor",List.of("writer") )
@@ -62,7 +61,7 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content
 
-                val stoneAdded = testStonesModule.objectMapper.readValue<Option<StoneId>>(stonesString, object : TypeReference<Option<StoneId>>() {
+                val stoneAdded = testWeb.jacksonMapper.readValue<Option<StoneId>>(stonesString, object : TypeReference<Option<StoneId>>() {
                 })
                 stoneAdded should be(some(1L))
             }
@@ -76,7 +75,7 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content
 
-                val stoneAdded = testStonesModule.objectMapper.readValue<Option<StoneId>>(stonesString, object : TypeReference<Option<StoneId>>() {
+                val stoneAdded = testWeb.jacksonMapper.readValue<Option<StoneId>>(stonesString, object : TypeReference<Option<StoneId>>() {
                 })
                 stoneAdded should be(some(2L))
             }
@@ -88,7 +87,7 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
                 }.response.content
 
-                val stones = testStonesModule.objectMapper.readValue<List<Stone>>(stonesString,
+                val stones = testWeb.jacksonMapper.readValue<List<Stone>>(stonesString,
                     object : TypeReference<List<Stone>>() {
                 })
                 stones.size() should be(2)
@@ -99,7 +98,7 @@ internal class StoneRestTest : DescribeSpec({
                     HttpMethod.Get, "/stones/2"
                 ).response.content
 
-                val stone = testStonesModule.objectMapper.readValue(stonesString, Stone::class.java)
+                val stone = testWeb.jacksonMapper.readValue(stonesString, Stone::class.java)
                 stone.data.name should be("burp")
             }
         }

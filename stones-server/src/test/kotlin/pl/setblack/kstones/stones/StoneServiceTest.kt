@@ -3,16 +3,16 @@ package pl.setblack.kstones.stones
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
-import pl.setblack.nee.effects.security.SecurityErrorType
-import pl.setblack.nee.security.test.TestDB
-import pl.setblack.nee.web.test.TestWebContext
+import dev.neeffect.nee.effects.security.SecurityErrorType
+import dev.neeffect.nee.security.test.TestDB
+import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.vavr.collection.List
 import io.vavr.kotlin.some
 import pl.setblack.kotlinStones.StoneData
 
 internal class StoneServiceTest : DescribeSpec({
     describe("stone service") {
-        val testWeb = TestWebContext()
+        val testWeb = TestWebContextProvider()
         val wc = testWeb.testCtx()
         val stoneService = StonesModule().stoneService
 
@@ -35,7 +35,7 @@ internal class StoneServiceTest : DescribeSpec({
             }
         }
         describe("writer user") {
-            val editorCall = TestWebContext().testCtx { req ->
+            val editorCall = TestWebContextProvider().testCtx { req ->
                 req.addHeader("Authorization", "Basic ZWRpdG9yOmVkaXRvcg==")
             }
             it("should be able to add stone") {

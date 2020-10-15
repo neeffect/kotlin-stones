@@ -15,7 +15,7 @@ import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kstones.db.DbConnection.jdbcConfig
 import pl.setblack.kstones.db.initializeDb
 import pl.setblack.kstones.stones.StonesModule
-import pl.setblack.nee.Nee
+import dev.neeffect.nee.Nee
 import java.sql.Driver
 import java.sql.DriverManager
 

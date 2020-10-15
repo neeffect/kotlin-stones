@@ -5,12 +5,11 @@ import io.kotest.matchers.shouldBe
 import io.vavr.control.Option
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.db.DbSequence
-import pl.setblack.nee.Nee
-import pl.setblack.nee.web.test.TestWebContext
+import dev.neeffect.nee.Nee
+import dev.neeffect.nee.web.test.TestWebContextProvider
 
 internal class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
-
         val wc = TestCtx.testCtx()
         val repo = StoneRepo(TestCtx, DbSequence(TestCtx))
         When(" stone inserted into db") {
@@ -20,13 +19,11 @@ internal class StoneRepoTest : BehaviorSpec({
                 TestStonesDbSchema.createDb().use {
                     val result = insertedStoneId.flatMap { maybeStoneId ->
                         maybeStoneId.map { stoneId ->
-                            println("reading stone")
                             repo.readStone().constP()(stoneId).map {
                                 Option.some(it)
                             }
                         }.getOrElse(Nee.pure(Option.none()))
                     }.perform(wc)(Unit).toFuture().get()
-                    println("performed $result")
                     result.get().get().data.name shouldBe "old1"
                 }
             }
@@ -48,4 +45,4 @@ internal class StoneRepoTest : BehaviorSpec({
 
 }
 
-object TestCtx:TestWebContext()
+object TestCtx:TestWebContextProvider()

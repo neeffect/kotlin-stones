@@ -1,19 +1,18 @@
 package pl.setblack.kstones.stones
 
-import pl.setblack.nee.Nee
-import pl.setblack.nee.ctx.web.WebContext
+import dev.neeffect.nee.Nee
+import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import io.vavr.collection.List
 import pl.setblack.kotlinStones.StoneData
-import pl.setblack.nee.ctx.web.JDBCBasedWebContext
 
 class StoneService(
-    private  val context: JDBCBasedWebContext,
+    private  val context: JDBCBasedWebContextProvider,
     private val stoneRepo: StoneRepo) {
 
     fun allStones() = stoneRepo.readAllStones()
 
     fun addStone(newStone: StoneData) = Nee.constP(
-        context.effects().secured(List.of(StonesModule.SecurityRoles.writer))
+        context.fx().secured(List.of(StonesModule.SecurityRoles.writer))
     ) {
     }.anyError().flatMap {
         stoneRepo.addNewStone(newStone)

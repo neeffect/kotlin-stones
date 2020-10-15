@@ -4,7 +4,7 @@ import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
-import pl.setblack.nee.effects.jdbc.JDBCConfig
+import dev.neeffect.nee.effects.jdbc.JDBCConfig
 import java.sql.Connection
 
 object DbConnection {
@@ -14,8 +14,6 @@ object DbConnection {
         user = "sa",
         password = ""
     )
-
-
 }
 
 fun initializeDb(dbConnection:Connection)  {
