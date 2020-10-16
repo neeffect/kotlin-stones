@@ -54,7 +54,7 @@ class StoneRepo(
             .values(stoneId, newStone.name, newStone.color, newStone.size)
             .execute()
         if (insertedRows == 1) {
-            Option.some(stoneId as StoneId)
+            Option.some(stoneId)
         } else {
             Option.none()
         }
