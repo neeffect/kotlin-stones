@@ -10,11 +10,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kstones.oauth.GoogleOauth
 
 class StoneRest(
     private val webContext: JDBCBasedWebContextProvider,
     private val stoneService: StoneService,
-    ) {
+) {
 
     fun api(): Route.() -> Unit = {
         install(ContentNegotiation) {
@@ -24,7 +25,7 @@ class StoneRest(
             }
         }
         get("/stones/{id}") {
-            val id =  call.parameters["id"]!!.toLong()
+            val id = call.parameters["id"]!!.toLong()
             val stone = stoneService.getStone()
             webContext.create(call).serveMessage(webContext.async { stone }, id)
         }
@@ -34,11 +35,18 @@ class StoneRest(
             webContext.create(call).serveMessage(webContext.async { stones }, Unit)
         }
 
-        post("/stones"){
+        post("/stones") {
             val newStone = call.receive<StoneData>()
+
+//            val authHeader = call.request.header("Authorization") ?: ""
+//            println("dahaq $authHeader")
+//            if (authHeader.startsWith("Bearer")) {
+//                println(authHeader)
+//                GoogleOauth.findUser(authHeader)
+//            }
             println(newStone)
             val stoneAdded =
-                    stoneService.addStone(newStone)
+                stoneService.addStone(newStone)
 
             webContext.create(call).serveMessage(webContext.async { stoneAdded }, Unit)
         }

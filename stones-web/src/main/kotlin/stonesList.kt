@@ -121,7 +121,7 @@ fun addStone(newStone: StoneData, user: User): Promise<Long> =
             "/api/stones", RequestInit(method = "POST",
                 headers = Headers().apply {
                     set("Content-Type", "application/json")
-                    set("Authorization", "Basic ${user.baseAuth()}")
+                    set("Authorization", user.autHeader())
                 },
                 body = JSON.stringify(newStone) { key, value ->
                     when (value) {

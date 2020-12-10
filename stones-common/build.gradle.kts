@@ -10,7 +10,7 @@ kotlin {
             kotlin.srcDir("src/main/kotlin")
             resources.srcDir("src/main/resources")
             dependencies {
-                implementation("io.github.gciatto:kt-math:0.1.3")
+                Libs.KtMath.ktMath
             }
 
         }

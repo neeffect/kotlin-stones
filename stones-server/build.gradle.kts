@@ -1,7 +1,5 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import nu.studer.gradle.jooq.JooqEdition
-import org.jooq.meta.jaxb.ForcedType
-import org.jooq.meta.jaxb.Property
 import org.gradle.jvm.tasks.Jar
 
 plugins {
@@ -13,9 +11,9 @@ plugins {
     id("java")
 }
 
-val nee_version = "0.5.0"
+
 val h2_version = "1.4.200"
-val ktor_version = "1.4.0"
+val ktor_version = "1.4.3"
 
  val db = mapOf(
     "url"      to  "jdbc:h2:${projectDir}/build/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET",
@@ -30,39 +28,42 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jooq:jooq")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("com.h2database:h2:${h2_version}")
-    jooqGenerator("com.h2database:h2:${h2_version}")
+    implementation(Libs.JOOQ.jooq)
+    implementation(Libs.H2.database)
+    jooqGenerator(Libs.H2.database)
 
-    implementation("pl.setblack:nee-ctx-web-ktor:${nee_version}")
-    implementation("pl.setblack:nee-jdbc:${nee_version}")
-    implementation("pl.setblack:nee-security-jdbc:${nee_version}")
+    implementation(Libs.Nee.ctxWebKtor)
+    implementation(Libs.Nee.jdbc)
+    implementation(Libs.Nee.securityJdbc)
+
+    implementation(Libs.Ktor.clientJvm)
+    implementation(Libs.Ktor.clientCIO)
+
     implementation(project(":stones-common"))
+// https://mvnrepository.com/artifact/xerces/xercesImpl
+    //added only because konf brings own horrible parses and kill liquibase
+    implementation( group ="xerces", name = "xercesImpl", version = "2.12.0")
 
+    implementation ("com.sksamuel.hoplite:hoplite-core:1.3.10")
+    implementation ("com.sksamuel.hoplite:hoplite-yaml:1.3.10")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
+    Libs.Jackson.moduleKotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
-    implementation("io.ktor:ktor-server-core:$ktor_version")
+    // implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.vavr:vavr-jackson:0.10.2")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:2.5.5")
-    // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
     implementation(group = "org.liquibase", name = "liquibase-core", version = "3.6.1")
+
     liquibaseRuntime("org.liquibase:liquibase-core:3.6.1")
-    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.0.1")
-    liquibaseRuntime("com.h2database:h2:${h2_version}")
+    liquibaseRuntime(Libs.H2.database)
 
-
-    implementation(group = "com.mchange", name = "c3p0", version = "0.9.5.5")
-
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.2.5")
-    //testImplementation("io.kotest:kotest-runner-console-jvm:4.1.3.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.0")
 
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
-    testImplementation("pl.setblack:nee-security-jdbc-test:${nee_version}")
-    testImplementation("pl.setblack:nee-ctx-web-test:${nee_version}")
+    testImplementation(Libs.Nee.jdbcTest)
+    testImplementation(Libs.Nee.ctxWebTest)
 }
 
 java {
@@ -95,13 +96,13 @@ liquibase {
 
 
 jooq {
-    version.set("3.11.11")
+    version.set(Libs.JOOQ.version)
     edition.set(JooqEdition.OSS)
 
     configurations {
         create("main") {
             jooqConfiguration.apply {
-                logging = org.jooq.meta.jaxb.Logging.WARN
+                //logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.h2.Driver"
                     url = db["url"]
@@ -121,7 +122,6 @@ jooq {
                     }
                     target.apply {
                         packageName = "pl.setblack.kstones.dbModel"
-                        //directory = "src/generated/jooq"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

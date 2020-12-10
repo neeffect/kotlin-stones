@@ -9,12 +9,13 @@ import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.vavr.collection.List
 import io.vavr.kotlin.some
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
 
 internal class StoneServiceTest : DescribeSpec({
     describe("stone service") {
         val testWeb = TestWebContextProvider()
         val wc = testWeb.testCtx()
-        val stoneService = StonesModule().stoneService
+        val stoneService = StonesModule(jwtModule).stoneService
 
         it("should have no stones in init db") {
             TestDB(testWeb.jdbcConfig).initializeDb().use {
