@@ -25,29 +25,6 @@ Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 
 <> 2020-08-07T104352.500.txt
 
-###
-
-POST http://localhost:3000/api/stones
-Content-Type: application/json
-Authorization: Basic ZWRpdG9yOmVkaXRvcg==
-
-{
-  "name": "Normalny",
-  "price": 10.99
-}
-
-
-
-###
-
-POST http://localhost:8080/api/stones
-Content-Type: application/json
-Authorization: Basic weong==
-
-{
-  "name": "Normalny",
-  "price": 10.99
-}
 
 
 ###

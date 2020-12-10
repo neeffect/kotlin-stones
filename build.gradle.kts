@@ -2,7 +2,7 @@
 group "pl.setblack"
 version "1.0-SNAPSHOT"
 plugins {
-    val kotlinVersion = "1.4.0"
+    val kotlinVersion = "1.4.10"
     id("org.jetbrains.kotlin.js") version kotlinVersion apply false
     id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion apply false
 }

@@ -40,6 +40,13 @@ dependencies {
     implementation(npm("@material-ui/core", "^4.9.14"))
     implementation(npm("@material-ui/icons", "^4.9.1"))
 
+    implementation(Libs.Ktor.clientJs)
+    implementation(Libs.Ktor.clientJsonJs)
+    implementation(Libs.Kotlin.serialization)
+    implementation(Libs.Ktor.clientSerialization)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.7")
+
 }
 
 

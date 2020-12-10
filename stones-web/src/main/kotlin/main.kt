@@ -38,9 +38,18 @@ data class AppState (val user: User? = null, val loginDialog: Boolean = false) {
     fun loggedIn() : Boolean = user != null
 }
 
-data class User(val login : String , val pass: String) {
+data class User(val login : String , val pass: String? = null, val gtoken: String? = null) {
     fun baseAuth() =
         window.btoa("${login}:${pass}")
+
+    fun oauthHeader() = "Bearer $gtoken"
+
+    fun autHeader() = if (gtoken != null) {
+        oauthHeader()
+    } else {
+        "Basic ${baseAuth()}"
+    }
+
 }
 
 data class AppProps(val state: AppState, val stateChange : (AppState)->Unit) : RProps
@@ -77,11 +86,18 @@ val app = functionalComponent<RProps> {props->
     }
     child(loginDialog, LoginDialog(appState.loginDialog) { user ->
         val stateWithUser = appState.copy(user = user, loginDialog = false)
-        loginUser(AppProps(stateWithUser, setAppState)).then {
-            setAppState(
-                stateWithUser
-            )
+        if (user.pass != null) {
+            loginUser(AppProps(stateWithUser, setAppState)).then {
+                setAppState(
+                    stateWithUser
+                )
+            }
+        } else {
+            //TODO
+            println("setting state with user")
+            setAppState(stateWithUser)
         }
+
     }) {
 
     }
