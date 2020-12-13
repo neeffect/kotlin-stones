@@ -11,7 +11,7 @@ env:
   GKE_ZONE: europe-west3-b
   IMAGE: stones-server
   OAUTHCONF_SECRET: ${{ secrets.OAUTHCONF_SECRET }}
-  JWTCONF_SECRET:  ${{ secrets.JWTCONF_SECRET }}
+  JWTCONF_SECRET: ${{ secrets.JWTCONF_SECRET }}
 
 jobs:
   setup-build-publish-deploy:
@@ -70,6 +70,6 @@ jobs:
           sed -i "s/JWTCONF_SECRET/${JWTCONF_SECRET}/" secrets.yml
           sed -i "s/OAUTHCONF_SECRET/${OAUTHCONF_SECRET}/" secrets.yml
           ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-         ../../kustomize build . | kubectl apply -f -
+          ../../kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$IMAGE
           kubectl get services -o wide
