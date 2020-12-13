@@ -10,6 +10,8 @@ env:
   GKE_CLUSTER: cluster-1
   GKE_ZONE: europe-west3-b
   IMAGE: stones-server
+  OAUTHCONF_SECRET: ${{ secrets.OAUTHCONF_SECRET }}
+  JWTCONF_SECRET:  ${{ secrets.JWTCONF_SECRET }}
 
 jobs:
   setup-build-publish-deploy:
