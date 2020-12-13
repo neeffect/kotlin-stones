@@ -28,6 +28,14 @@ spec:
               cpu: 250m
             limits:
               cpu: 2000m
+          volumeMounts:
+            - name: oauth-secrets
+              mountPath: "/securedEtc"
+              readOnly: true
+      volumes:
+        - name: oauth-secrets
+          secret:
+            secretName: stones-secrets
   selector:
     matchLabels:
       app: stones-server

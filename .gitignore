@@ -4,5 +4,5 @@ out/
 *.iml
 .kotlintest/
 build/
-securedEtc
+securedEtc/
 tmp/
