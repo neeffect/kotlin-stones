@@ -68,6 +68,8 @@ jobs:
         run: |-
           cd stones-server/infra
           ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+          ../../kustomize edit set jwtConfig.yml JWTCONF_SECRET=${{ secrets.JWTCONF_SECRET }}
+          ../../kustomize edit set jwtConfig.yml OAUTHCONF_SECRET=${{ secrets.OAUTHCONF_SECRET}}
           ../../kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$IMAGE
           kubectl get services -o wide
