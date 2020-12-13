@@ -67,9 +67,11 @@ jobs:
       - name: Deploy
         run: |-
           cd stones-server/infra
+          sed -i "s/JWTCONF_SECRET/${JWTCONF_SECRET}/" secrets.yml
+          sed -i "s/OAUTHCONF_SECRET/${OAUTHCONF_SECRET}/" secrets.yml
           ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-          ../../kustomize edit set jwtConfig.yml JWTCONF_SECRET=${{ secrets.JWTCONF_SECRET }}
-          ../../kustomize edit set jwtConfig.yml OAUTHCONF_SECRET=${{ secrets.OAUTHCONF_SECRET}}
+#          ../../kustomize edit set jwtConfig.yml JWTCONF_SECRET=${{ secrets.JWTCONF_SECRET }}
+#        ../../kustomize edit set jwtConfig.yml OAUTHCONF_SECRET=${{ secrets.OAUTHCONF_SECRET}}
           ../../kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$IMAGE
           kubectl get services -o wide
