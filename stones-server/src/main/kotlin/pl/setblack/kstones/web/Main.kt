@@ -20,8 +20,10 @@ import pl.setblack.kstones.stones.StonesModule
 import pl.setblack.kstones.oauth.OauthConfigLoder
 import pl.setblack.kstones.oauth.OauthModule
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.sql.DriverManager
+import kotlin.io.path.isRegularFile
 
 internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
     val oauthModule = OauthModule(config.second, config.first)
@@ -66,19 +68,43 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
     server.start(wait = true)
 }
 
-fun main() {
-
-    val secPath = Paths.get("securedEtc").toAbsolutePath()
-    println(secPath)
-    if (Files.exists(secPath)) {
-        val oauthConfigLoder = OauthConfigLoder(secPath)
-        oauthConfigLoder.loadJwtConfig().flatMap { jwtConfig ->
-            oauthConfigLoder.loadOauthConfig().map {oauthConfig ->
-                Pair(jwtConfig, oauthConfig)
-            }
-        }.forEach {  config ->
-            startServer(config)
+private fun dumpFiles(path: Path) {
+    Files.newDirectoryStream(path).forEach {filePath ->
+        if (Files.isRegularFile(filePath)) {
+            println("reading content of: $filePath")
+            val content = Files.readString(filePath)
+            println( "contet of $filePath is\n $content")
+        } else {
+            println("not regular file: $filePath")
         }
+    }
+}
+
+fun main() {
+    println("starting")
+    val secPath = Paths.get("securedEtc").toAbsolutePath()
+    println("secPath: ${secPath}")
+    dumpFiles(secPath)
+    if (Files.exists(secPath)) {
+        println("secPath existed")
+        try {
+            val oauthConfigLoder = OauthConfigLoder(secPath)
+            println("loadung  config")
+            oauthConfigLoder.loadJwtConfig().flatMap { jwtConfig ->
+
+                oauthConfigLoder.loadOauthConfig().map {oauthConfig ->
+                    Pair(jwtConfig, oauthConfig)
+                }
+            }.map {  config ->
+                startServer(config)
+            }.mapLeft { configError ->
+                println("error loading config: $configError")
+
+            }
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
+
 
 
     } else {
