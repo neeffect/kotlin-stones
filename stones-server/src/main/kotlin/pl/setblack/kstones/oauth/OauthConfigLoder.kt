@@ -7,6 +7,7 @@ import com.sksamuel.hoplite.fp.Validated
 import com.sksamuel.hoplite.fp.flatMap
 import com.sksamuel.hoplite.fp.invalid
 import com.sksamuel.hoplite.fp.sequence
+import com.sksamuel.hoplite.yaml.YamlParser
 import dev.neeffect.nee.security.jwt.JwtConfig
 import dev.neeffect.nee.security.oauth.OauthConfig
 import io.vavr.collection.Map
@@ -18,7 +19,9 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
 class OauthConfigLoder(private val configPath: Path) {
+    private val yamlParser = YamlParser()
     fun loadOauthConfig() : Either<ConfigError,OauthConfig> =   ConfigLoader.Builder()
+        .addFileExtensionMapping("yml", yamlParser)
         .addSource(PropertySource.path(configPath.resolve("oauthConfig.yml")))
         .addDecoder(VMapDecoder())
         .build()
@@ -29,6 +32,7 @@ class OauthConfigLoder(private val configPath: Path) {
 
     fun loadJwtConfig() : Either<ConfigError, JwtConfig> =
         ConfigLoader.Builder()
+            .addFileExtensionMapping("yml", yamlParser)
             .addSource(PropertySource.path(configPath.resolve("jwtConfig.yml")))
             .build()
             .loadConfig<JwtConfig>()
