@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: demo-certificate
+spec:
+  domains:
+    - demo.neeffect.dev
+
+# for details check https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
