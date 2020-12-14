@@ -19,9 +19,7 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
 class OauthConfigLoder(private val configPath: Path) {
-    private val yamlParser = YamlParser()
     fun loadOauthConfig() : Either<ConfigError,OauthConfig> =   ConfigLoader.Builder()
-        .addFileExtensionMapping("yml", yamlParser).also { println("added yml support 1") }
         .addSource(PropertySource.path(configPath.resolve("oauthConfig.yml")))
         .addDecoder(VMapDecoder())
         .build()
@@ -32,8 +30,6 @@ class OauthConfigLoder(private val configPath: Path) {
 
     fun loadJwtConfig() : Either<ConfigError, JwtConfig> =
         ConfigLoader.Builder()
-            .addFileExtensionMapping("yml", yamlParser)
-            .also { println("added yml support 1") }
             .addSource(PropertySource.path(configPath.resolve("jwtConfig.yml")))
             .build()
             .loadConfig<JwtConfig>()
