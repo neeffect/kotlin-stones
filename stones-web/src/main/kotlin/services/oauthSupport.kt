@@ -17,7 +17,7 @@ val baseUrl = window.location.protocol + "//" + window.location.host
 fun getGoogleOauthUrl(): Promise<String> =
     MainScope().promise {
         val client = HttpClient(Js)
-        val resp = client.get<String>("${baseUrl}/api/oauth/generateUrl/Google?redirect=http://localhost:8080")
+        val resp = client.get<String>("${baseUrl}/api/oauth/generateUrl/Google?redirect=$baseUrl")
         println(resp)
         resp
     }
