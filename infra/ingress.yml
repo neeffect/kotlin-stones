@@ -4,7 +4,7 @@ metadata:
   name: stones-ingres
   annotations:
     kubernetes.io/ingress.global-static-ip-name: demo-neffect-dev
-    networking.gke.io/managed-certificates: demo-certificate
+    networking.gke.io/managed-certificates: demo-certificate-b
 spec:
   rules:
     - http:

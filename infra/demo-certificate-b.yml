@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: demo-certificate
+  name: demo-certificate-b
 spec:
   domains:
     - demo.neeffect.dev
