@@ -1,8 +1,8 @@
 CREATE SEQUENCE GlobalStonesSeq;
 
-CREATE TABLE  Stones
+create table  Stones
 (
-	id BIGINT not null, -- flaw in JOOQ or H2 (no returning works_
+	id bigint not null, -- flaw in JOOQ or H2 (no returning works_
 	name VARCHAR not null,
 	color VARCHAR not null,
 	size INTEGER not null,
@@ -12,6 +12,18 @@ CREATE TABLE  Stones
 
 CREATE UNIQUE INDEX STONES_ID_UINDEX
 	on Stones (ID);
+
+create table Votes
+(
+    id bigint not null,
+    stone_id bigint not null,
+    voter varchar not null,
+    constraint Votes_pk
+        primary key (id),
+    foreign key (stone_id) references Stones(id),
+    constraint single_vote unique (stone_id, voter)
+
+);
 
 CREATE TABLE AuditLogs (
     id BIGINT not null,

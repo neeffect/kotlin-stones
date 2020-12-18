@@ -3,6 +3,7 @@ import com.ccfraser.muirwik.components.dialog.mDialog
 import com.ccfraser.muirwik.components.dialog.mDialogActions
 import com.ccfraser.muirwik.components.dialog.mDialogContent
 import com.ccfraser.muirwik.components.dialog.mDialogTitle
+import com.ccfraser.muirwik.components.mSvgIcon
 import com.ccfraser.muirwik.components.mTextField
 import com.ccfraser.muirwik.components.targetInputValue
 import io.ktor.client.*
@@ -18,12 +19,18 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
+import kotlinx.css.Image
+import kotlinx.css.backgroundImage
+import kotlinx.html.classes
 import kotlinx.serialization.Serializable
 import org.w3c.dom.url.URLSearchParams
+import react.dom.img
 import react.useEffect
 import services.baseUrl
 import services.getGoogleOauthUrl
 import services.loginUser
+import styled.css
+import styled.styledI
 
 data class LoginDialog(val opened: Boolean = false, val setUser: (User) -> Unit) : RProps
 
@@ -42,24 +49,28 @@ val loginDialog = functionalComponent<LoginDialog> { props ->
 
     mDialog(props.opened) {
         mDialogTitle("Login")
-        mDialogContent {
-            mTextField(label = "login", value = login, onChange = { event -> setLogin(event.targetInputValue) })
-            mTextField(label = "password", type = InputType.password,
-                value = password, onChange = { event -> setPassword(event.targetInputValue) })
-        }
+//        mDialogContent {
+//            mTextField(label = "login", value = login, onChange = { event -> setLogin(event.targetInputValue) })
+//            mTextField(label = "password", type = InputType.password,
+//                value = password, onChange = { event -> setPassword(event.targetInputValue) })
+//        }
         mDialogActions {
-            mButton("login", onClick = {
-                props.setUser(User(login, password))
+//            mButton("login", onClick = {
+//                props.setUser(User(login, password))
+//
+//            })
 
-            })
-
-            mButton("gloogloo", onClick = {
-                println("launching req")
+            mButton("", onClick = {
                 getGoogleOauthUrl().then { url ->
-                    println("have google url: $url")
                     window.location.assign(url)
                 }
-            })
+            }) {
+                css {
+                    +StonesStyles.googleLogin
+                    backgroundImage = Image("url(/icons/btn_google_signin_light_normal_web.png)")
+                }
+
+            }
         }
     }
 }
@@ -84,28 +95,3 @@ data class LocalOauthLoginData(
     val redirectUri: String
 )
 
-
-//code that works and shows HUGE problem with coroutines (Js in client)
-/*
- MainScope().launch {
-                        println("launching req")
-                        val client = HttpClient(Js)
-                        val YOUR_CLIENT_ID = "xxxxx-yyyyyy"
-                        val YOUR_REDIRECT_URI="http://localhost:8080"
-                        val queryString = "client_id=$YOUR_CLIENT_ID&" +
-                                "redirect_uri=$YOUR_REDIRECT_URI&" +
-                                "response_type=token&" +
-                                "scope=profile&" +
-                                "include_granted_scopes=true&" +
-                                "state=pass-through%20value"
-                        println("query is $queryString")
-                        try {
-                            //val resp = client.get<String>("/oauth2/v2/auth?$queryString")
-                            val resp = client.get<String>("https://accounts.google.com/o/oauth2/v2/auth?$queryString")
-                            println("response is $resp")
-                            resp
-                        } catch (e:Exception) {
-                            e.printStackTrace()
-                        }
-                    }
- */
