@@ -16,7 +16,6 @@ object TestStonesDbSchema {
 
     fun createDb() : AutoCloseable {
             val c = createDbConnection()
-
             return updateDbSchema(c)
     }
 

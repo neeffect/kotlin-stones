@@ -14,6 +14,7 @@ import io.ktor.request.*
 import io.vavr.kotlin.option
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.kstones.db.DbSequence
+import pl.setblack.kstones.dbModel.public_.Sequences
 import pl.setblack.kstones.oauth.OauthModule
 
 import java.sql.Connection
@@ -40,7 +41,7 @@ open class StonesModule(private val jwtConfigurationModule: JwtConfigurationModu
 
     //---------------------------------
     private val seq: DbSequence by lazy {
-        DbSequence(context)
+        DbSequence(context, Sequences.GLOBALSTONESSEQ)
     }
 
     open val stoneRepo by lazy { StoneRepo(context, seq) }

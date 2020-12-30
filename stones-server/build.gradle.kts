@@ -172,8 +172,6 @@ tasks {
     }
 }
 
-//application {
-//    mainClass = "pl.setblack.kstones.web.MainKt"
-//}
+
 
 

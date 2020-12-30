@@ -7,11 +7,12 @@ import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.db.DbSequence
 import dev.neeffect.nee.Nee
 import dev.neeffect.nee.web.test.TestWebContextProvider
+import pl.setblack.kstones.dbModel.public_.Sequences
 
 internal class StoneRepoTest : BehaviorSpec({
     Given("a repo") {
         val wc = TestCtx.testCtx()
-        val repo = StoneRepo(TestCtx, DbSequence(TestCtx))
+        val repo = StoneRepo(TestCtx, DbSequence(TestCtx, Sequences.GLOBALSTONESSEQ))
         When(" stone inserted into db") {
             val stone = StoneData("old1", "gray", 5)
             val insertedStoneId = repo.addNewStone(stone)

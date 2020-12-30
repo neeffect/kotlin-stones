@@ -1,17 +1,19 @@
-CREATE SEQUENCE GlobalStonesSeq;
+create sequence GlobalStonesSeq;
 
 create table  Stones
 (
 	id bigint not null, -- flaw in JOOQ or H2 (no returning works_
-	name VARCHAR not null,
-	color VARCHAR not null,
-	size INTEGER not null,
+	name varchar not null,
+	color varchar not null,
+	size integer not null,
 	constraint Stones_pk
 		primary key (ID)
 );
 
-CREATE UNIQUE INDEX STONES_ID_UINDEX
+create unique INDEX STONES_ID_UINDEX
 	on Stones (ID);
+
+create sequence GlobalVotesSeq;
 
 create table Votes
 (
