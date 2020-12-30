@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.gradle.kotlin.dsl.exclude
 
 object Libs {
-    const val kotlin_version = "1.4.0"
+    const val kotlin_version = "1.4.21"
     const val liquibase_version="3.6.1"
 
     object H2 {
@@ -49,6 +49,7 @@ object Libs {
         const val clientCIO = "io.ktor:ktor-client-cio:$version"
         const val clientJsonJs = "io.ktor:ktor-client-json-js:$version"
         const val clientSerialization = "io.ktor:ktor-client-serialization:$version"
+        const val clientSerializationJs = "io.ktor:ktor-client-serialization-js:$version"
     }
 
     object KtMath {
@@ -62,10 +63,10 @@ object Libs {
     }
 
     object Kotlin {
-        private const val serializationVersion = "1.4.0"
+        private const val serializationVersion = "1.0.1"
         const val kotlinStdLib =  "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         //every time I use  it I waste a lot of time
-        const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
+        const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
     }
 
 }

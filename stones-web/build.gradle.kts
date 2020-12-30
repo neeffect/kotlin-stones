@@ -43,7 +43,8 @@ dependencies {
     implementation(Libs.Ktor.clientJs)
     implementation(Libs.Ktor.clientJsonJs)
     implementation(Libs.Kotlin.serialization)
-    implementation(Libs.Ktor.clientSerialization)
+    compileOnly(Libs.Ktor.clientSerialization)
+    implementation(Libs.Ktor.clientSerializationJs)
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.7")
 
