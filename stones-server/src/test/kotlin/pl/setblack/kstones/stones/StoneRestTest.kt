@@ -24,6 +24,7 @@ import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.haste.Haste
 import io.kotest.matchers.shouldBe
 import io.vavr.kotlin.list
+import pl.setblack.kotlinStones.StoneWithVotes
 import pl.setblack.kstones.oauth.OauthModule
 import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
 import java.time.Clock
@@ -113,8 +114,8 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Bearer $expectedWriterToken")
                 }.response.content
 
-                val stones = testWeb.jacksonMapper.readValue<List<Stone>>(stonesString,
-                    object : TypeReference<List<Stone>>() {
+                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
+                    object : TypeReference<List<StoneWithVotes>>() {
                     })
                 stones.size() should be(2)
             }

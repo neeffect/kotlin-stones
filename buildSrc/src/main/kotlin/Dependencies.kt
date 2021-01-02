@@ -12,18 +12,15 @@ object Libs {
     object H2 {
         private const val version = "1.4.200"
         const val  database = "com.h2database:h2:$version"
-
     }
 
     object JOOQ {
-
         const val version = "3.13.5"
         const val  jooq = "org.jooq:jooq:$version"
-
     }
 
     object Nee {
-        private const val version = "0.5.2"
+        private const val version = "0.6.1"
         const val ctxWebKtor = "pl.setblack:nee-ctx-web-ktor:$version"
         const val jdbc = "pl.setblack:nee-jdbc:$version"
         const val securityJdbc = "pl.setblack:nee-security-jdbc:$version"

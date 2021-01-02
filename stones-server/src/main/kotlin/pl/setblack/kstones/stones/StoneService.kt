@@ -4,6 +4,7 @@ import dev.neeffect.nee.Nee
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import io.vavr.collection.List
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kotlinStones.StoneId
 
 class StoneService(
     private  val context: JDBCBasedWebContextProvider,
@@ -11,12 +12,12 @@ class StoneService(
 
     fun allStones() = stoneRepo.readAllStones()
 
-    fun addStone(newStone: StoneData) = Nee.constP(
+    fun addStone(newStone: StoneData) = Nee.with(
         context.fx().secured(List.of(StonesModule.SecurityRoles.writer))
     ) {
     }.anyError().flatMap {
-        stoneRepo.addNewStone(newStone)
+        stoneRepo.addNewStone(newStone).anyError()
     }
 
-    fun getStone() = stoneRepo.readStone()
+    fun getStone(id: StoneId) = stoneRepo.readStone(id)
 }

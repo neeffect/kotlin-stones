@@ -26,13 +26,13 @@ class StoneRest(
         }
         get("/stones/{id}") {
             val id = call.parameters["id"]!!.toLong()
-            val stone = stoneService.getStone()
-            webContext.create(call).serveMessage(webContext.async { stone }, id)
+            val stone = stoneService.getStone(id)
+            webContext.create(call).serveMessage(webContext.async { stone })
         }
         get("/stones") {
             val stones = stoneService
                 .allStones()
-            webContext.create(call).serveMessage(webContext.async { stones }, Unit)
+            webContext.create(call).serveMessage(webContext.async { stones })
         }
 
         post("/stones") {
@@ -48,7 +48,7 @@ class StoneRest(
             val stoneAdded =
                 stoneService.addStone(newStone)
 
-            webContext.create(call).serveMessage(webContext.async { stoneAdded }, Unit)
+            webContext.create(call).serveMessage(webContext.async { stoneAdded })
         }
         get("/demo") {
             call.respondText("HELLO WORLD!")

@@ -1,6 +1,7 @@
 package pl.setblack.kstones.votes
 
 import dev.neeffect.nee.Nee
+import dev.neeffect.nee.effects.Out
 import dev.neeffect.nee.effects.test.get
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -14,23 +15,79 @@ import pl.setblack.kstones.stones.TestCtx
 import pl.setblack.kstones.stones.TestStonesDbSchema
 
 class VotesRepoTest : DescribeSpec({
-    describe("votes repo"){
+    describe("votes repo") {
         val wc = TestCtx.testCtx()
         val votesRepo = VotesRepo(TestCtx)
         val stonesRepo = StoneRepo(TestCtx, DbSequence(TestCtx, Sequences.GLOBALSTONESSEQ))
-
-        it ("adds a vote") {
-            val voter  = "testVoter"
-            val testStone = StoneData("testStone","yellow", 10)
+        val voter  = "testVoter"
+        val testStone = StoneData("testStone", "yellow", 10)
+        it("adds a vote") {
             TestStonesDbSchema.createDb().use {
                 val addedVote = stonesRepo.addNewStone(testStone).flatMap { addedStone ->
                     addedStone.map { stoneId ->
                         votesRepo.voteStone(stoneId, voter)
                     }.getOrElse(Nee.pure(Option.none()))
                 }
-                addedVote.perform(wc)(Unit).get() shouldBe some(1L)
+                addedVote.perform(wc).get() shouldBe some(VoteId(1L))
             }
         }
+        it ("adds a vote only once for a stone") {
+            TestStonesDbSchema.createDb().use {
+                val stoneAdded = stonesRepo.addNewStone(testStone)
+                val addedVote1 = votesRepo.voteStone(1L, voter)
+                val addedVote2 = votesRepo.voteStone(1L, voter)
 
+                stoneAdded.perform(wc).flatMap {
+                    addedVote1.perform(wc).flatMap {
+                        addedVote2.perform(wc)
+                    }
+                }.get() shouldBe Option.none<VoteId>()
+            }
+        }
+        it ("adds votes  for 2 various stones") {
+            TestStonesDbSchema.createDb().use {
+                val stoneAdded1 = stonesRepo.addNewStone(testStone)
+                val stoneAdded2 = stonesRepo.addNewStone(testStone)
+                val addedVote1 = votesRepo.voteStone(1L, voter)
+                val addedVote2 = votesRepo.voteStone(2L, voter)
+                stoneAdded1.perform(wc).flatMap {
+                    stoneAdded2.perform(wc).flatMap {
+                        addedVote1.perform(wc).flatMap {
+                            addedVote2.perform(wc)
+                        }
+                    }
+                }.get() shouldBe some(VoteId(2L))
+            }
+        }
+        it ("calulates votes  for 2 various votes") {
+            TestStonesDbSchema.createDb().use {
+                val stoneAdded = stonesRepo.addNewStone(testStone)
+                val addedVote1 = votesRepo.voteStone(1L, voter)
+                val addedVote2 = votesRepo.voteStone(1L, "voter2")
+
+                stoneAdded.perform(wc).flatMap {
+                    addedVote1.perform(wc).flatMap {
+                        addedVote2.perform(wc).flatMap {
+                            votesRepo.calcVotes(1L).perform(wc)
+                        }
+                    }
+                }.get() shouldBe 2L
+            }
+        }
+        it ("should see votes in StonesRepo") {
+            TestStonesDbSchema.createDb().use {
+                val stoneAdded = stonesRepo.addNewStone(testStone)
+                val addedVote1 = votesRepo.voteStone(1L, voter)
+                val addedVote2 = votesRepo.voteStone(1L, "voter2")
+
+                stoneAdded.perform(wc).flatMap {
+                    addedVote1.perform(wc).flatMap {
+                        addedVote2.perform(wc).flatMap {
+                            stonesRepo.readAllStones().perform(wc)
+                        }
+                    }
+                }.get().get(0).votes shouldBe 2
+            }
+        }
     }
 })

@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import dev.neeffect.nee.effects.security.SecurityErrorType
+import dev.neeffect.nee.effects.test.get
 import dev.neeffect.nee.security.test.TestDB
 import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.vavr.collection.List
@@ -20,8 +21,8 @@ internal class StoneServiceTest : DescribeSpec({
         it("should have no stones in init db") {
             TestDB(testWeb.jdbcConfig).initializeDb().use {
                 TestStonesDbSchema.updateDbSchema(it.connection). use {
-                    val result = stoneService.allStones().perform(wc)(Unit)
-                    result.toFuture().get().get().toJavaList().shouldBeEmpty()
+                    val result = stoneService.allStones().perform(wc)
+                    result.get().toJavaList().shouldBeEmpty()
                 }
             }
         }
@@ -29,7 +30,7 @@ internal class StoneServiceTest : DescribeSpec({
             it("should not be able to add stone") {
                 TestDB(testWeb.jdbcConfig).initializeDb().use {
 
-                    val result = stoneService.addStone(testStone).perform(wc)(Unit)
+                    val result = stoneService.addStone(testStone).perform(wc)
                     result.toFuture().get().swap()
                         .get() shouldBe SecurityErrorType.MissingRole(List.of(StonesModule.SecurityRoles.writer))
                 }
@@ -45,8 +46,8 @@ internal class StoneServiceTest : DescribeSpec({
                         testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
 
                         val result =
-                            stoneService.addStone(testStone).perform(editorCall)(Unit)
-                        result.toFuture().get().get() shouldBe (some(1L))
+                            stoneService.addStone(testStone).perform(editorCall)
+                        result.get() shouldBe (some(1L))
                     }
                 }
             }
@@ -56,11 +57,11 @@ internal class StoneServiceTest : DescribeSpec({
                         testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
 
                         val added =
-                            stoneService.addStone(testStone).perform(editorCall)(Unit)
+                            stoneService.addStone(testStone).perform(editorCall)
+                        val addedStoneId = added.toFuture().get().get().get()
+                        val result = stoneService.getStone(addedStoneId).perform(editorCall)
 
-                        val result = stoneService.getStone().perform(editorCall)(added.toFuture().get().get().get())
-
-                        result.toFuture().get().get().data.name shouldBe ("old1")
+                        result.get().data.name shouldBe ("old1")
                     }
                 }
             }

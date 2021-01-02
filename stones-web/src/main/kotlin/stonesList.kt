@@ -5,9 +5,7 @@ import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
-import com.ccfraser.muirwik.components.list.mList
-import com.ccfraser.muirwik.components.list.mListItem
-import com.ccfraser.muirwik.components.list.mListItemIcon
+import com.ccfraser.muirwik.components.list.*
 import kotlinx.browser.window
 import kotlinx.css.*
 import org.gciatto.kt.math.BigDecimal
@@ -16,6 +14,7 @@ import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
 import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kotlinStones.StoneWithVotes
 import react.dom.div
 import react.functionalComponent
 import react.useEffect
@@ -25,8 +24,9 @@ import styled.styledDiv
 import kotlin.js.Promise
 
 data class StonesState(
-    val stones: List<Stone> = listOf(),
-    val newData: StoneData = StoneData("","",5))
+    val stones: List<StoneWithVotes> = listOf(),
+    val newData: StoneData = StoneData("", "", 5)
+)
 
 val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
@@ -54,15 +54,26 @@ val stonesList = functionalComponent<AppProps> { props ->
 
                             styledDiv {
                                 css {
-                                    val size = (stone.data.size*3).px
-                                    borderRadius = 50.pct
-                                    backgroundColor = Color(stone.data.color)
-                                    width = size
-                                    height = size
+                                    width = 100.px
                                 }
-                                +" "
+                                styledDiv {
+                                    css {
+                                        val size = (stone.stone.data.size * 3).px
+                                        borderRadius = 50.pct
+                                        backgroundColor = Color(stone.stone.data.color)
+                                        width = size
+                                        height = size
+                                    }
+                                    +" "
+                                }
                             }
-                            +stone.data.name
+
+                            mListItemText {
+                                +stone.stone.data.name
+                            }
+                            mListItemSecondaryAction {
+                                mIcon("thumb_up")
+                            }
                         }
                     }
                 }
@@ -73,17 +84,17 @@ val stonesList = functionalComponent<AppProps> { props ->
                 }
                 mCardContent {
                     mTextField(label = "Name", value = stones.newData.name, onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy( name= event.targetInputValue)))
+                        setStones(stones.copy(newData = stones.newData.copy(name = event.targetInputValue)))
                     }) {
                     }
 
                     mTextField(label = "Color", value = stones.newData.color, onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy( color = event.targetInputValue)))
+                        setStones(stones.copy(newData = stones.newData.copy(color = event.targetInputValue)))
                     }) {
                     }
 
                     mTextField(label = "Size", value = stones.newData.size.toString(), onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy( size = event.targetInputValue.toInt())))
+                        setStones(stones.copy(newData = stones.newData.copy(size = event.targetInputValue.toInt())))
                     }) {
                     }
                 }
@@ -110,26 +121,26 @@ val stonesList = functionalComponent<AppProps> { props ->
 }
 
 
-fun fetchStones(): Promise<List<Stone>> =
+fun fetchStones(): Promise<List<StoneWithVotes>> =
     window.fetch("/api/stones")
         .then(Response::json)
-        .then { it as Array<Stone> }
+        .then { it as Array<StoneWithVotes> }
         .then { it.toList() }
 
 fun addStone(newStone: StoneData, user: User): Promise<Long> =
-        window.fetch(
-            "/api/stones", RequestInit(method = "POST",
-                headers = Headers().apply {
-                    set("Content-Type", "application/json")
-                    set("Authorization", user.autHeader())
-                },
-                body = JSON.stringify(newStone) { key, value ->
-                    when (value) {
-                        is BigDecimal -> value.toString()
-                        else -> value
-                    }
-                })
-        ).then { it.json().unsafeCast<Long>() }
+    window.fetch(
+        "/api/stones", RequestInit(method = "POST",
+            headers = Headers().apply {
+                set("Content-Type", "application/json")
+                set("Authorization", user.autHeader())
+            },
+            body = JSON.stringify(newStone) { key, value ->
+                when (value) {
+                    is BigDecimal -> value.toString()
+                    else -> value
+                }
+            })
+    ).then { it.json().unsafeCast<Long>() }
 
 
 

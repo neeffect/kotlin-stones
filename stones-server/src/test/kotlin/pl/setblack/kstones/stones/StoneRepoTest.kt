@@ -20,11 +20,11 @@ internal class StoneRepoTest : BehaviorSpec({
                 TestStonesDbSchema.createDb().use {
                     val result = insertedStoneId.flatMap { maybeStoneId ->
                         maybeStoneId.map { stoneId ->
-                            repo.readStone().constP()(stoneId).map {
+                            repo.readStone(stoneId).map {
                                 Option.some(it)
                             }
                         }.getOrElse(Nee.pure(Option.none()))
-                    }.perform(wc)(Unit).toFuture().get()
+                    }.perform(wc).toFuture().get()
                     result.get().get().data.name shouldBe "old1"
                 }
             }
@@ -33,7 +33,7 @@ internal class StoneRepoTest : BehaviorSpec({
                 TestStonesDbSchema.createDb().use {
                     val result = insertedStoneId.flatMap {
                         repo.readAllStones()
-                    }.perform(wc)(Unit).toFuture().get()
+                    }.perform(wc).toFuture().get()
                     result.get().size() shouldBe 1
                 }
             }
