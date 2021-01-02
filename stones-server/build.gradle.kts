@@ -13,7 +13,7 @@ plugins {
 
 
 val h2_version = "1.4.200"
-val ktor_version = "1.4.3"
+
 
  val db = mapOf(
     "url"      to  "jdbc:h2:${projectDir}/build/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET",
@@ -50,8 +50,8 @@ dependencies {
     Libs.Jackson.moduleKotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     // implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-jackson:$ktor_version")
+    implementation(Libs.Ktor.serverNetty)
+    implementation(Libs.Ktor.jackson)
     implementation("io.vavr:vavr-jackson:0.10.2")
 
     implementation(group = "org.liquibase", name = "liquibase-core", version = "3.6.1")
@@ -61,7 +61,7 @@ dependencies {
 
     testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.0")
 
-    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation(Libs.Ktor.serverTestHost)
     testImplementation(Libs.Nee.jdbcTest)
     testImplementation(Libs.Nee.ctxWebTest)
 }

@@ -30,6 +30,7 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
     val stonesModule = StonesModule(oauthModule.jwtConfigModule)
 
     val server = embeddedServer(Netty, port = 3000) {
+
         install(ContentNegotiation) {
             jackson {
                 //TODO check if needed

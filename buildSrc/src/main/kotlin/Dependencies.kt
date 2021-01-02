@@ -20,7 +20,7 @@ object Libs {
     }
 
     object Nee {
-        private const val version = "0.6.1"
+        private const val version = "0.6.2-LOCAL"
         const val ctxWebKtor = "pl.setblack:nee-ctx-web-ktor:$version"
         const val jdbc = "pl.setblack:nee-jdbc:$version"
         const val securityJdbc = "pl.setblack:nee-security-jdbc:$version"
@@ -39,7 +39,7 @@ object Libs {
     }
 
     object Ktor {
-        private const val  version = "1.4.3"
+        private const val  version = "1.5.0"
         const val clientJs = "io.ktor:ktor-client-js:$version"
         const val clientJvm = "io.ktor:ktor-client-core-jvm:$version"
         const val clientApache = "io.ktor:ktor-client-apache:$version"
@@ -47,6 +47,9 @@ object Libs {
         const val clientJsonJs = "io.ktor:ktor-client-json-js:$version"
         const val clientSerialization = "io.ktor:ktor-client-serialization:$version"
         const val clientSerializationJs = "io.ktor:ktor-client-serialization-js:$version"
+        const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
+        const val serverNetty = "io.ktor:ktor-server-netty:$version"
+        const val jackson = "io.ktor:ktor-jackson:$version"
     }
 
     object KtMath {
