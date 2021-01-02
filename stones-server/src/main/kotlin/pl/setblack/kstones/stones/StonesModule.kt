@@ -16,6 +16,8 @@ import pl.setblack.kstones.db.DbConnection
 import pl.setblack.kstones.db.DbSequence
 import pl.setblack.kstones.dbModel.public_.Sequences
 import pl.setblack.kstones.oauth.OauthModule
+import pl.setblack.kstones.votes.VoteService
+import pl.setblack.kstones.votes.VotesRepo
 
 import java.sql.Connection
 
@@ -48,7 +50,11 @@ open class StonesModule(private val jwtConfigurationModule: JwtConfigurationModu
 
     open val stoneService by lazy { StoneService(context, stoneRepo) }
 
-    open val stoneRest by lazy { StoneRest(context, stoneService) }
+    open val stoneRest by lazy { StoneRest(context, stoneService, votesService) }
+
+    open val votesRepo by lazy { VotesRepo(context)}
+
+    open val votesService by lazy {VoteService(context,votesRepo)}
 
 
     object SecurityRoles {

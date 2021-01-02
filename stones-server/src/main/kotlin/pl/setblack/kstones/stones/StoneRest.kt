@@ -11,10 +11,12 @@ import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.oauth.GoogleOauth
+import pl.setblack.kstones.votes.VoteService
 
 class StoneRest(
     private val webContext: JDBCBasedWebContextProvider,
     private val stoneService: StoneService,
+    private val voteService: VoteService
 ) {
 
     fun api(): Route.() -> Unit = {
@@ -33,6 +35,11 @@ class StoneRest(
             val stones = stoneService
                 .allStones()
             webContext.create(call).serveMessage(webContext.async { stones })
+        }
+        post("/stones/{id}/vote") {
+            val id = call.parameters["id"]!!.toLong()
+            val res = voteService.vote(id)
+            webContext.create(call).serveMessage(webContext.async { res })
         }
 
         post("/stones") {

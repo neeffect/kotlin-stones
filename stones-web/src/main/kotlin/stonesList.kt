@@ -1,6 +1,7 @@
 import com.ccfraser.muirwik.components.*
 import com.ccfraser.muirwik.components.button.MButtonVariant
 import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.button.mIconButton
 import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardContent
@@ -14,6 +15,7 @@ import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
 import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kotlinStones.StoneWithVotes
 import react.dom.div
 import react.functionalComponent
@@ -71,8 +73,15 @@ val stonesList = functionalComponent<AppProps> { props ->
                             mListItemText {
                                 +stone.stone.data.name
                             }
-                            mListItemSecondaryAction {
-                                mIcon("thumb_up")
+                            mListItemSecondaryAction  {
+                                mIconButton("thumb_up", onClick = {
+                                    if (user!=null) {
+                                        voteStone( stone.stone.id, user)
+                                    } else {
+                                        println("please log in")
+                                    }
+
+                                })
                             }
                         }
                     }
@@ -142,5 +151,13 @@ fun addStone(newStone: StoneData, user: User): Promise<Long> =
             })
     ).then { it.json().unsafeCast<Long>() }
 
-
+fun voteStone(id:StoneId, user: User) : Promise<Unit> =
+    window.fetch(
+        "/api/stones/${id}/vote", RequestInit(method = "POST",
+            headers = Headers().apply {
+                set("Content-Type", "application/json")
+                set("Authorization", user.autHeader())
+            },
+        )
+    ).then { it.json().unsafeCast<Long>() }
 

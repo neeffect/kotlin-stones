@@ -4,7 +4,7 @@ package pl.setblack.kstones.stones
 import dev.neeffect.nee.Nee
 import dev.neeffect.nee.ANee
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
-import dev.neeffect.nee.with
+import dev.neeffect.nee.plus
 import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.toVavrList
@@ -49,7 +49,7 @@ class StoneRepo(
     }
 
     fun readStone(id:StoneId) = Nee.with(
-            stonesCache.of(id) with ctx.fx().tx) { jdbcProvider ->
+            stonesCache.of(id) + ctx.fx().tx) { jdbcProvider ->
             val dsl = DSL.using(jdbcProvider.getConnection().getResource())
             val record = dsl.selectFrom(Stones.STONES)
                 .where(Stones.STONES.ID.eq(id))
