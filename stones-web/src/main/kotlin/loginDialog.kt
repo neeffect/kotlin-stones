@@ -83,6 +83,7 @@ fun checkOauthLogin(props: LoginDialog) {
         val code = searchParams.get("code")
         val data = LocalOauthLoginData(code!!, state!!, baseUrl)
         loginUser(data).then { jwtLogin ->
+            window.history.pushState("", "Stones (logged)", "/")
             props.setUser(User(jwtLogin.displayName, gtoken = jwtLogin.encodedToken))
         }
     }

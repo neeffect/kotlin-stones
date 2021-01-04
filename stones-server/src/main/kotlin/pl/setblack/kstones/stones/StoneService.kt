@@ -5,6 +5,7 @@ import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import io.vavr.collection.List
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneId
+import pl.setblack.kstones.infrastructure.InfrastuctureModule
 
 class StoneService(
     private  val context: JDBCBasedWebContextProvider,
@@ -13,7 +14,7 @@ class StoneService(
     fun allStones() = stoneRepo.readAllStones()
 
     fun addStone(newStone: StoneData) = Nee.with(
-        context.fx().secured(List.of(StonesModule.SecurityRoles.writer))
+        context.fx().secured(List.of(InfrastuctureModule.SecurityRoles.writer))
     ) {
     }.anyError().flatMap {
         stoneRepo.addNewStone(newStone).anyError()

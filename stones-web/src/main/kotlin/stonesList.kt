@@ -87,41 +87,43 @@ val stonesList = functionalComponent<AppProps> { props ->
                     }
                 }
             }
-            mCard(raised = false) {
-                mCardHeader(title = "add new stone") {
+            if (user != null) {
+                mCard(raised = false) {
+                    mCardHeader(title = "add new stone") {
 
-                }
-                mCardContent {
-                    mTextField(label = "Name", value = stones.newData.name, onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy(name = event.targetInputValue)))
-                    }) {
                     }
-
-                    mTextField(label = "Color", value = stones.newData.color, onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy(color = event.targetInputValue)))
-                    }) {
-                    }
-
-                    mTextField(label = "Size", value = stones.newData.size.toString(), onChange = { event ->
-                        setStones(stones.copy(newData = stones.newData.copy(size = event.targetInputValue.toInt())))
-                    }) {
-                    }
-                }
-
-
-                mCardActions {
-                    mButton("add stone", MColor.primary, variant = MButtonVariant.contained, onClick = { _ ->
-                        if (user != null) {
-                            addStone(stones.newData, user)
-                                .then {
-                                    fetchStones().then {
-                                        setStones(stones.copy(stones = it))
-                                    }
-                                }
+                    mCardContent {
+                        mTextField(label = "Name", value = stones.newData.name, onChange = { event ->
+                            setStones(stones.copy(newData = stones.newData.copy(name = event.targetInputValue)))
+                        }) {
                         }
 
-                    }) {
+                        mTextField(label = "Color", value = stones.newData.color, onChange = { event ->
+                            setStones(stones.copy(newData = stones.newData.copy(color = event.targetInputValue)))
+                        }) {
+                        }
 
+                        mTextField(label = "Size", value = stones.newData.size.toString(), onChange = { event ->
+                            setStones(stones.copy(newData = stones.newData.copy(size = event.targetInputValue.toInt())))
+                        }) {
+                        }
+                    }
+
+
+                    mCardActions {
+                        mButton("add stone", MColor.primary, variant = MButtonVariant.contained, onClick = { _ ->
+                            if (user != null) {
+                                addStone(stones.newData, user)
+                                    .then {
+                                        fetchStones().then {
+                                            setStones(stones.copy(stones = it))
+                                        }
+                                    }
+                            }
+
+                        }) {
+
+                        }
                     }
                 }
             }

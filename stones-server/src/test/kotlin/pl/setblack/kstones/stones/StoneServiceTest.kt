@@ -10,13 +10,14 @@ import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.vavr.collection.List
 import io.vavr.kotlin.some
 import pl.setblack.kotlinStones.StoneData
+import pl.setblack.kstones.infrastructure.InfrastuctureModule
 import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
 
 internal class StoneServiceTest : DescribeSpec({
     describe("stone service") {
         val testWeb = TestWebContextProvider()
         val wc = testWeb.testCtx()
-        val stoneService = StonesModule(jwtModule).stoneService
+        val stoneService = StonesModule(InfrastuctureModule(jwtModule)).stoneService
 
         it("should have no stones in init db") {
             TestDB(testWeb.jdbcConfig).initializeDb().use {
@@ -32,7 +33,7 @@ internal class StoneServiceTest : DescribeSpec({
 
                     val result = stoneService.addStone(testStone).perform(wc)
                     result.toFuture().get().swap()
-                        .get() shouldBe SecurityErrorType.MissingRole(List.of(StonesModule.SecurityRoles.writer))
+                        .get() shouldBe SecurityErrorType.MissingRole(List.of(InfrastuctureModule.SecurityRoles.writer))
                 }
             }
         }
@@ -43,7 +44,7 @@ internal class StoneServiceTest : DescribeSpec({
             it("should be able to add stone") {
                 TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
                     TestStonesDbSchema.updateDbSchema(testDb.connection). use {
-                        testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
+                        testDb.addUser("editor", "editor", List.of(InfrastuctureModule.SecurityRoles.writer.roleName))
 
                         val result =
                             stoneService.addStone(testStone).perform(editorCall)
@@ -54,7 +55,7 @@ internal class StoneServiceTest : DescribeSpec({
             it("should be able to add and read stone") {
                 TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
                     TestStonesDbSchema.updateDbSchema(testDb.connection). use {
-                        testDb.addUser("editor", "editor", List.of(StonesModule.SecurityRoles.writer.roleName))
+                        testDb.addUser("editor", "editor", List.of(InfrastuctureModule.SecurityRoles.writer.roleName))
 
                         val added =
                             stoneService.addStone(testStone).perform(editorCall)

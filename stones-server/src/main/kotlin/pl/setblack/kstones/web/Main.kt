@@ -16,18 +16,16 @@ import io.ktor.server.netty.Netty
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kstones.db.DbConnection.jdbcConfig
 import pl.setblack.kstones.db.initializeDb
-import pl.setblack.kstones.stones.StonesModule
 import pl.setblack.kstones.oauth.OauthConfigLoder
 import pl.setblack.kstones.oauth.OauthModule
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.sql.DriverManager
-import kotlin.io.path.isRegularFile
 
 internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
     val oauthModule = OauthModule(config.second, config.first)
-    val stonesModule = StonesModule(oauthModule.jwtConfigModule)
+    val webModule = WebModule(oauthModule.jwtConfigModule)
 
     val server = embeddedServer(Netty, port = 3000) {
 
@@ -46,7 +44,7 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
         }
         routing{
             route("api") {
-                stonesModule.stoneRest.api()()
+                webModule.stoneRest.api()()
                 oauthModule.oauthApi.oauthApi()()
             }
 
@@ -55,8 +53,7 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
             }
 
         }
-
-        routing(stonesModule.context.sysApi())
+        routing(webModule.infraModule.context.sysApi())
     }
 
     DriverManager.getConnection(

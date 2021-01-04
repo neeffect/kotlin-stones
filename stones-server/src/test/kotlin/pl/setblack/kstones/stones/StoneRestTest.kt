@@ -25,8 +25,10 @@ import io.haste.Haste
 import io.kotest.matchers.shouldBe
 import io.vavr.kotlin.list
 import pl.setblack.kotlinStones.StoneWithVotes
+import pl.setblack.kstones.infrastructure.InfrastuctureModule
 import pl.setblack.kstones.oauth.OauthModule
 import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
+import pl.setblack.kstones.web.WebModule
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
@@ -39,18 +41,22 @@ internal class StoneRestTest : DescribeSpec({
         TestDB(testWeb.jdbcConfig).initializeDb().use { testDb ->
             testDb.addUser("editor", "editor", List.of("writer"))
             TestStonesDbSchema.updateDbSchema(testDb.connection)
-            val testStonesModule = object : StonesModule(jwtModule) {
-                override val jdbcProvider: JDBCProvider = JDBCProvider(testDb.connection)
+            val testStonesModule = object : WebModule(jwtModule) {
+                override val infraModule by lazy {
+                    object : InfrastuctureModule(jwtModule) {
+                        override val jdbcProvider: JDBCProvider = JDBCProvider(testDb.connection)
+                    }
+                }
             }
             val stoneRest = testStonesModule.stoneRest
             val engine = TestApplicationEngine(testWeb.testEnv)
             engine.start(false)
             engine.application.routing(stoneRest.api())
-            it ("created expected jwt token") {
-                val user   = User(UUID(1,1),"editor",list(UserRole("writer")))
-                val jwt=jwtModule.jwtUsersCoder.encodeUser(user)
+            it("created expected jwt token") {
+                val user = User(UUID(1, 1), "editor", list(UserRole("writer")))
+                val jwt = jwtModule.jwtUsersCoder.encodeUser(user)
                 val signed = jwtModule.jwtCoder.signJwt(jwt)
-                signed should be (expectedWriterToken)
+                signed should be(expectedWriterToken)
 
 
             }
@@ -133,7 +139,9 @@ internal class StoneRestTest : DescribeSpec({
 }) {
 
     companion object {
-        const val  expectedWriterToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDcyOTM0MjMsImlhdCI6MTYwNzI5MzMyMywiaXNzIjoidGVzdCIsInN1YiI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMSIsImxvZ2luIjoiZWRpdG9yIiwiZGlzcGxheU5hbWUiOiJlZGl0b3IiLCJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMSIsInJvbGVzIjoid3JpdGVyIn0.ddycHBFLpXUmIJJn4KmxBXyafN7k3rm-t2NG-GxdoVQ"
+        const val expectedWriterToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDcyOTM0MjMsImlhdCI6MTYwNzI5MzMyMywiaXNzIjoidGVzdCIsInN1YiI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMSIsImxvZ2luIjoiZWRpdG9yIiwiZGlzcGxheU5hbWUiOiJlZGl0b3IiLCJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMSIsInJvbGVzIjoid3JpdGVyIn0.ddycHBFLpXUmIJJn4KmxBXyafN7k3rm-t2NG-GxdoVQ"
+
         object OauthTestConfig {
             val jwtCfg = JwtConfig(100, "test", "test")
             val hasteTime = Haste.TimeSource.withFixedClock(

@@ -6,7 +6,7 @@ import dev.neeffect.nee.security.jwt.JwtConfig
 import dev.neeffect.nee.security.oauth.*
 import io.vavr.collection.Seq
 import io.vavr.kotlin.list
-import pl.setblack.kstones.stones.StonesModule
+import pl.setblack.kstones.infrastructure.InfrastuctureModule
 
 class OauthModule(
     oathConfig: OauthConfig,
@@ -21,6 +21,6 @@ class OauthModule(
     }
 
     override val userRoles: (OauthProviderName, OauthResponse) -> Seq<UserRole> = { _,_->
-        list(StonesModule.SecurityRoles.writer)
+        list(InfrastuctureModule.SecurityRoles.writer)
     }
 }
