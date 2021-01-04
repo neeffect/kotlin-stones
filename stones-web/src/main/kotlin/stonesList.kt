@@ -82,6 +82,7 @@ val stonesList = functionalComponent<AppProps> { props ->
                                     }
 
                                 })
+                                +stone.votes.toString()
                             }
                         }
                     }
