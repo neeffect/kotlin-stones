@@ -20,7 +20,6 @@ val appBar = functionalComponent<AppProps> { props ->
 
                 mTypography("Stones", variant = MTypographyVariant.h6, color = MTypographyColor.inherit) {
                 css { flexGrow = 1.0 }
-
             }
             if (props.state.loggedIn()) {
                 mIconButton ("account_circle", color = MColor.inherit ) {

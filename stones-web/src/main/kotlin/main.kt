@@ -57,7 +57,7 @@ val app = functionalComponent<RProps> {props->
     child(appBar, AppProps(appState, setAppState)) {
 
     }
-    child(stonesList, AppProps(appState, setAppState)) {
+    child(stones, AppProps(appState, setAppState)) {
 
     }
     child(loginDialog, LoginDialog(appState.loginDialog) { user ->

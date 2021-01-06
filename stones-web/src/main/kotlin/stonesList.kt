@@ -40,7 +40,7 @@ val stonesList = functionalComponent<AppProps> { props ->
         }
     }
 
-    div {
+
         mContainer {
             mCard {
                 mCardHeader(title = "existing stones : ${user?.login}") {
@@ -129,7 +129,7 @@ val stonesList = functionalComponent<AppProps> { props ->
                 }
             }
         }
-    }
+
 }
 
 
