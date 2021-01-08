@@ -4,9 +4,8 @@ import dev.neeffect.nee.security.User
 import dev.neeffect.nee.security.UserRole
 import dev.neeffect.nee.security.jwt.JwtConfigurationModule
 import pl.setblack.kstones.infrastructure.InfrastuctureModule
-import pl.setblack.kstones.stones.StoneRest
 import pl.setblack.kstones.stones.StonesModule
-import pl.setblack.kstones.votes.VotesModule
+import pl.setblack.kstones.votes.VoteModule
 
 open class WebModule(private val jwtConfigurationModule: JwtConfigurationModule<User, UserRole>) {
     open val infraModule by lazy {
@@ -18,7 +17,7 @@ open class WebModule(private val jwtConfigurationModule: JwtConfigurationModule<
     }
 
     open val votesModule by lazy {
-        VotesModule(infraModule)
+        VoteModule(infraModule)
     }
 
     open val stoneRest by lazy {

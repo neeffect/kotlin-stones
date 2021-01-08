@@ -18,7 +18,7 @@ typealias VoterId = String
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
 inline class VoteId(val id: Long)
 
-class VotesRepo(
+class VoteRepo(
     private val ctx: JDBCBasedWebContextProvider
 ) {
 

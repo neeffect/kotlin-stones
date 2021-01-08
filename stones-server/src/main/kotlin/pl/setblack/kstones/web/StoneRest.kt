@@ -1,4 +1,4 @@
-package pl.setblack.kstones.stones
+package pl.setblack.kstones.web
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
@@ -10,7 +10,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kotlinStones.StoneData
-import pl.setblack.kstones.oauth.GoogleOauth
+import pl.setblack.kstones.stones.StoneService
 import pl.setblack.kstones.votes.VoteService
 
 class StoneRest(
@@ -44,17 +44,8 @@ class StoneRest(
 
         post("/stones") {
             val newStone = call.receive<StoneData>()
-
-//            val authHeader = call.request.header("Authorization") ?: ""
-//            println("dahaq $authHeader")
-//            if (authHeader.startsWith("Bearer")) {
-//                println(authHeader)
-//                GoogleOauth.findUser(authHeader)
-//            }
-            println(newStone)
             val stoneAdded =
                 stoneService.addStone(newStone)
-
             webContext.create(call).serveMessage(webContext.async { stoneAdded })
         }
         get("/demo") {

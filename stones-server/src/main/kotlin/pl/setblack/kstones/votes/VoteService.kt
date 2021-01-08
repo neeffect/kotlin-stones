@@ -8,7 +8,7 @@ import pl.setblack.kstones.infrastructure.InfrastuctureModule
 
 class VoteService(
     private  val context: JDBCBasedWebContextProvider,
-    private val votesRepo: VotesRepo) {
+    private val voteRepo: VoteRepo) {
 
     fun vote(stoneId: StoneId) = Nee.withError(
         context.fx().secured(List.of(InfrastuctureModule.SecurityRoles.writer))
@@ -19,6 +19,6 @@ class VoteService(
             user.login
         }
     }.anyError().flatMap { user ->
-        votesRepo.voteStone(stoneId, user).anyError()
+        voteRepo.voteStone(stoneId, user).anyError()
     }
 }

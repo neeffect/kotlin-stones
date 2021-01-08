@@ -1,7 +1,6 @@
 package pl.setblack.kstones.votes
 
 import dev.neeffect.nee.Nee
-import dev.neeffect.nee.effects.Out
 import dev.neeffect.nee.effects.test.get
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -17,7 +16,7 @@ import pl.setblack.kstones.stones.TestStonesDbSchema
 class VotesRepoTest : DescribeSpec({
     describe("votes repo") {
         val wc = TestCtx.testCtx()
-        val votesRepo = VotesRepo(TestCtx)
+        val votesRepo = VoteRepo(TestCtx)
         val stonesRepo = StoneRepo(TestCtx, DbSequence(TestCtx, Sequences.GLOBALSTONESSEQ))
         val voter  = "testVoter"
         val testStone = StoneData("testStone", "yellow", 10)
