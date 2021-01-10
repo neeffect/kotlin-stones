@@ -134,6 +134,34 @@ internal class StoneRestTest : DescribeSpec({
                 val stone = testWeb.jacksonMapper.readValue(stonesString, Stone::class.java)
                 stone.data.name should be("burp")
             }
+            it ("should allow vote") {
+                val voteResult = engine.handleRequest(
+                    HttpMethod.Post, "/stones/2/vote"
+                ){
+                    this.addHeader("Authorization", "Bearer $expectedWriterToken")
+                }.response.content
+                voteResult shouldBe("""{"id":1}""")
+            }
+            it ("should return vote") {
+                val stonesString = engine.handleRequest(
+                    HttpMethod.Get, "/stones"
+                ).response.content
+                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
+                    object : TypeReference<List<StoneWithVotes>>() {
+                    })
+                stones.first { it.stone.id == 2L }.votes shouldBe (1)
+            }
+            it ("should return that person voted") {
+                val stonesString = engine.handleRequest(
+                    HttpMethod.Get, "/stones"
+                ) {
+                    this.addHeader("Authorization", "Bearer $expectedWriterToken")
+                }.response.content
+                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
+                    object : TypeReference<List<StoneWithVotes>>() {
+                    })
+                stones.first { it.stone.id == 2L }.myVote shouldBe (true)
+            }
         }
     }
 }) {

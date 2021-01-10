@@ -20,7 +20,7 @@ object Libs {
     }
 
     object Nee {
-        private const val version = "0.6.3"
+        private const val version = "0.6.4"
         const val ctxWebKtor = "pl.setblack:nee-ctx-web-ktor:$version"
         const val jdbc = "pl.setblack:nee-jdbc:$version"
         const val securityJdbc = "pl.setblack:nee-security-jdbc:$version"
