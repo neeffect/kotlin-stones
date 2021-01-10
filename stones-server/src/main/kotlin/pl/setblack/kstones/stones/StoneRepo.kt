@@ -2,12 +2,12 @@ package pl.setblack.kstones.stones
 
 
 import dev.neeffect.nee.Nee
-import dev.neeffect.nee.ANee
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import dev.neeffect.nee.plus
-import io.vavr.collection.List
 import io.vavr.control.Option
 import io.vavr.kotlin.toVavrList
+import io.vavr.kotlin.none
+import org.jooq.SelectField
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.count
 import pl.setblack.kotlinStones.Stone
@@ -17,7 +17,6 @@ import pl.setblack.kotlinStones.StoneWithVotes
 import pl.setblack.kstones.db.SequenceGenerator
 import pl.setblack.kstones.dbModel.public_.tables.Stones
 import pl.setblack.kstones.dbModel.public_.tables.Votes
-import pl.setblack.kstones.dbModel.public_.tables.records.StonesRecord
 
 
 class StoneRepo(
@@ -26,25 +25,40 @@ class StoneRepo(
 
     private val stonesCache = ctx.fx().cache()
 
-    fun readAllStones() = Nee.with(ctx.fx().tx) { jdbcProvider ->
+    fun readAllStones(votesOf:Option<String> = none()) = Nee.with(ctx.fx().tx) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
+        val v1 = Votes("v1")
+        val v2 = Votes("v2")
+
+        //TODO async error handling - sth is broken
+        val whoVotedCondition = votesOf.map { name ->
+            v2.VOTER.eq(name)
+        }.getOrElse(DSL.falseCondition())
+        val voterSelect = votesOf.map {v2.VOTER as SelectField<String> }.
+            getOrElse(DSL.inline(null, v2.VOTER))
         dsl.select(
             Stones.STONES.ID,
             Stones.STONES.NAME,
             Stones.STONES.COLOR,
             Stones.STONES.SIZE,
-            count(Votes.VOTES.ID)).from(Stones.STONES)
-            .leftOuterJoin(Votes.VOTES)
-            .on(Stones.STONES.ID.eq(Votes.VOTES.STONE_ID))
-            .groupBy(Stones.STONES.ID)
+            count(v1.ID),
+            voterSelect
+            ).from(Stones.STONES)
+            .leftOuterJoin(v1)
+            .on(Stones.STONES.ID.eq(v1.STONE_ID))
+            .leftOuterJoin(v2)
+            .on( Stones.STONES.ID.eq(v2.STONE_ID).and(whoVotedCondition))
+            .groupBy(v1.STONE_ID)
             .fetch {record  ->
                 StoneWithVotes(
                     Stone(
                         record[0] as Long,
                         StoneData(record[1] as String, record[2] as String, record[3] as Int)),
-                    record[4] as Int)
+                    record[4] as Int,
+                    record[5] != null
+                )
             }
-            .toVavrList()
+            .toVavrList().also {println(votesOf)}
 
     }
 

@@ -52,7 +52,8 @@ dependencies {
     // implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation(Libs.Ktor.serverNetty)
     implementation(Libs.Ktor.jackson)
-    implementation("io.vavr:vavr-jackson:0.10.2")
+    implementation(Libs.Vavr.kotlin)
+    implementation(Libs.Vavr.jackson)
 
     implementation(group = "org.liquibase", name = "liquibase-core", version = "3.6.1")
 

@@ -28,6 +28,12 @@ object Libs {
         const val  ctxWebTest = "pl.setblack:nee-ctx-web-test:$version"
     }
 
+    object Vavr {
+        private const val version = "0.10.2"
+        const val kotlin = "io.vavr:vavr-kotlin:$version"
+        const val jackson  ="io.vavr:vavr-jackson:$version"
+    }
+
     object Jackson {
         val moduleKotlin = impl(Versions.moduleKotlin) {
             exclude("org.jetbrains.kotlin")
