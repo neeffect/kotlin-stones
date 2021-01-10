@@ -1,6 +1,5 @@
 package pl.setblack.kstones.stones
 
-
 import dev.neeffect.nee.Nee
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import dev.neeffect.nee.plus
@@ -18,7 +17,6 @@ import pl.setblack.kstones.db.SequenceGenerator
 import pl.setblack.kstones.dbModel.public_.tables.Stones
 import pl.setblack.kstones.dbModel.public_.tables.Votes
 
-
 class StoneRepo(
     private  val ctx: JDBCBasedWebContextProvider,
     private val seq: SequenceGenerator<Web>) {
@@ -30,7 +28,6 @@ class StoneRepo(
         val v1 = Votes("v1")
         val v2 = Votes("v2")
 
-        //TODO async error handling - sth is broken
         val whoVotedCondition = votesOf.map { name ->
             v2.VOTER.eq(name)
         }.getOrElse(DSL.falseCondition())
@@ -48,7 +45,7 @@ class StoneRepo(
             .on(Stones.STONES.ID.eq(v1.STONE_ID))
             .leftOuterJoin(v2)
             .on( Stones.STONES.ID.eq(v2.STONE_ID).and(whoVotedCondition))
-            .groupBy(v1.STONE_ID)
+            .groupBy(Stones.STONES.ID)
             .fetch {record  ->
                 StoneWithVotes(
                     Stone(
@@ -59,7 +56,6 @@ class StoneRepo(
                 )
             }
             .toVavrList().also {println(votesOf)}
-
     }
 
     fun readStone(id:StoneId) = Nee.with(
