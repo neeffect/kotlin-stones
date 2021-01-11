@@ -72,6 +72,7 @@ object Libs {
         private const val serializationVersion = "1.0.1"
         const val kotlinStdLib =  "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         //every time I use  it I waste a lot of time
+        //just a note that more time was wasted
         const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
     }
 

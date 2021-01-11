@@ -9,6 +9,7 @@ plugins {
     id("application")
     id("idea")
     id("java")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 
@@ -65,6 +66,9 @@ dependencies {
     testImplementation(Libs.Ktor.serverTestHost)
     testImplementation(Libs.Nee.jdbcTest)
     testImplementation(Libs.Nee.ctxWebTest)
+    implementation(Libs.Kotlin.serialization)
+   // implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1")
 }
 
 java {

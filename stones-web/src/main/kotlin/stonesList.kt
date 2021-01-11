@@ -9,15 +9,16 @@ import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.list.*
 import kotlinx.browser.window
 import kotlinx.css.*
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromDynamic
 import org.gciatto.kt.math.BigDecimal
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import org.w3c.fetch.Response
-import pl.setblack.kotlinStones.Stone
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kotlinStones.StoneWithVotes
-import react.dom.div
 import react.functionalComponent
 import react.useEffect
 import react.useState
@@ -34,8 +35,8 @@ val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
     val (stones, setStones) = useState(StonesState())
 
-    useEffect(emptyList()) {
-        fetchStones().then {
+    useEffect(listOf(user)) {
+        fetchStones(user).then {
             setStones(stones.copy(stones = it))
         }
     }
@@ -74,15 +75,25 @@ val stonesList = functionalComponent<AppProps> { props ->
                                 +stone.stone.data.name
                             }
                             mListItemSecondaryAction  {
-                                mIconButton("thumb_up", onClick = {
-                                    if (user!=null) {
-                                        voteStone( stone.stone.id, user)
-                                    } else {
-                                        println("please log in")
-                                    }
-
-                                })
                                 +stone.votes.toString()
+
+                                if (user!= null) {
+                                    mIconButton("thumb_up", onClick = {
+                                        if (!stone.myVote) {
+                                            voteStone(stone.stone.id, user).then{
+                                                val newStones: List<StoneWithVotes> = stones.stones.map { aStone: StoneWithVotes ->
+                                                    if (aStone.stone.id == stone.stone.id) {
+                                                        aStone.upVoted()
+
+                                                    } else {
+                                                        aStone
+                                                    }
+                                                }
+                                                setStones(stones.copy(stones=newStones))
+                                            }
+                                        }
+                                    }, color = if (stone.myVote) MColor.inherit else MColor.secondary, disabled = stone.myVote)
+                                }
                             }
                         }
                     }
@@ -116,7 +127,7 @@ val stonesList = functionalComponent<AppProps> { props ->
                             if (user != null) {
                                 addStone(stones.newData, user)
                                     .then {
-                                        fetchStones().then {
+                                        fetchStones(user).then {
                                             setStones(stones.copy(stones = it))
                                         }
                                     }
@@ -133,11 +144,17 @@ val stonesList = functionalComponent<AppProps> { props ->
 }
 
 
-fun fetchStones(): Promise<List<StoneWithVotes>> =
-    window.fetch("/api/stones")
+fun fetchStones(user: User?): Promise<List<StoneWithVotes>> =
+    window.fetch("/api/stones", RequestInit(method = "GET",
+        headers = Headers().apply {
+            user?.let {
+                set("Authorization", user.autHeader())
+            }
+        }))
         .then(Response::json)
-        .then { it as Array<StoneWithVotes> }
-        .then { it.toList() }
+        .then {
+            Json.decodeFromDynamic<List<StoneWithVotes>>(it) }
+
 
 fun addStone(newStone: StoneData, user: User): Promise<Long> =
     window.fetch(

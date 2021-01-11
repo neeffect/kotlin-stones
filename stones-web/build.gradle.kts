@@ -67,7 +67,7 @@ kotlin {
 
             runTask {
                 cssSupport.enabled = true
-                sourceMaps = false
+                sourceMaps = true
             }
 
             testTask {

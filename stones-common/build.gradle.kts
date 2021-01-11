@@ -1,8 +1,11 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
 }
 
-
+dependencies {
+//LESSON adding dependencies here has no effect
+}
 
 kotlin {
     sourceSets {
@@ -11,6 +14,7 @@ kotlin {
             resources.srcDir("src/main/resources")
             dependencies {
                 Libs.KtMath.ktMath
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
             }
 
         }
