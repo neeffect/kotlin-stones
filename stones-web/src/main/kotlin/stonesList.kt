@@ -74,25 +74,43 @@ val stonesList = functionalComponent<AppProps> { props ->
                             mListItemText {
                                 +stone.stone.data.name
                             }
-                            mListItemSecondaryAction  {
-                                +stone.votes.toString()
+                            mListItemSecondaryAction {
+                                mBadge(stone.votes, color = MBadgeColor.secondary) {
+                                    //css(ComponentStyles.margin)
+                                    attrs.anchorOriginHorizontal = MBadgeAnchorOriginHorizontal.right
+                                    attrs.anchorOriginVertical = MBadgeAnchorOriginVertical.top
+                                    css {
+                                        margin(2.spacingUnits)
+                                        padding(0.px, 2.spacingUnits)
+                                    }
+                                    if (user != null) {
+                                        mIconButton(
+                                            "thumb_up",
+                                            onClick = {
+                                                if (!stone.myVote) {
+                                                    voteStone(stone.stone.id, user).then {
+                                                        val newStones: List<StoneWithVotes> =
+                                                            stones.stones.map { aStone: StoneWithVotes ->
+                                                                if (aStone.stone.id == stone.stone.id) {
+                                                                    aStone.upVoted()
 
-                                if (user!= null) {
-                                    mIconButton("thumb_up", onClick = {
-                                        if (!stone.myVote) {
-                                            voteStone(stone.stone.id, user).then{
-                                                val newStones: List<StoneWithVotes> = stones.stones.map { aStone: StoneWithVotes ->
-                                                    if (aStone.stone.id == stone.stone.id) {
-                                                        aStone.upVoted()
-
-                                                    } else {
-                                                        aStone
+                                                                } else {
+                                                                    aStone
+                                                                }
+                                                            }
+                                                        setStones(stones.copy(stones = newStones))
                                                     }
                                                 }
-                                                setStones(stones.copy(stones=newStones))
+                                            },
+                                            color = if (stone.myVote) MColor.primary else MColor.secondary,
+                                            disabled = stone.myVote
+                                        ) {
+                                            css {
+                                                left = 28.px
+                                                bottom = 14.px
                                             }
                                         }
-                                    }, color = if (stone.myVote) MColor.inherit else MColor.secondary, disabled = stone.myVote)
+                                    }
                                 }
                             }
                         }
