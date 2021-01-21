@@ -42,11 +42,8 @@ dependencies {
 
     implementation(project(":stones-common"))
 // https://mvnrepository.com/artifact/xerces/xercesImpl
-    //added only because konf brings own horrible parses and kill liquibase
+    //added only because konf brings own horrible parses and kill liquibase //is it konf
     implementation( group ="xerces", name = "xercesImpl", version = "2.12.0")
-
-    implementation ("com.sksamuel.hoplite:hoplite-core:1.3.10")
-    implementation ("com.sksamuel.hoplite:hoplite-yaml:1.3.10")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
     Libs.Jackson.moduleKotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")

@@ -3,6 +3,7 @@ package pl.setblack.kstones.web
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import dev.neeffect.nee.security.jwt.JwtConfig
 import dev.neeffect.nee.security.oauth.OauthConfig
+import dev.neeffect.nee.security.oauth.config.OauthConfigLoder
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -16,7 +17,6 @@ import io.ktor.server.netty.Netty
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kstones.db.DbConnection.jdbcConfig
 import pl.setblack.kstones.db.initializeDb
-import pl.setblack.kstones.oauth.OauthConfigLoder
 import pl.setblack.kstones.oauth.OauthModule
 import java.nio.file.Files
 import java.nio.file.Path
@@ -81,15 +81,11 @@ private fun dumpFiles(path: Path) {
 fun main() {
     println("starting")
     val secPath = Paths.get("securedEtc").toAbsolutePath()
-    println("secPath: ${secPath}")
     dumpFiles(secPath)
     if (Files.exists(secPath)) {
-        println("secPath existed")
         try {
             val oauthConfigLoder = OauthConfigLoder(secPath)
-            println("loadung  config")
             oauthConfigLoder.loadJwtConfig().flatMap { jwtConfig ->
-
                 oauthConfigLoder.loadOauthConfig().map {oauthConfig ->
                     Pair(jwtConfig, oauthConfig)
                 }
@@ -97,7 +93,6 @@ fun main() {
                 startServer(config)
             }.mapLeft { configError ->
                 println("error loading config: $configError")
-
             }
         } catch (e : Exception) {
             e.printStackTrace()
