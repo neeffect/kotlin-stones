@@ -7,24 +7,17 @@ import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.list.*
-import kotlinx.browser.window
 import kotlinx.css.*
-import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromDynamic
-import org.gciatto.kt.math.BigDecimal
-import org.w3c.fetch.Headers
-import org.w3c.fetch.RequestInit
-import org.w3c.fetch.Response
 import pl.setblack.kotlinStones.StoneData
-import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kotlinStones.StoneWithVotes
 import react.functionalComponent
 import react.useEffect
 import react.useState
+import services.addStone
+import services.fetchStones
+import services.voteStone
 import styled.css
 import styled.styledDiv
-import kotlin.js.Promise
 
 data class StonesState(
     val stones: List<StoneWithVotes> = listOf(),
@@ -160,42 +153,4 @@ val stonesList = functionalComponent<AppProps> { props ->
         }
 
 }
-
-
-fun fetchStones(user: User?): Promise<List<StoneWithVotes>> =
-    window.fetch("/api/stones", RequestInit(method = "GET",
-        headers = Headers().apply {
-            user?.let {
-                set("Authorization", user.autHeader())
-            }
-        }))
-        .then(Response::json)
-        .then {
-            Json.decodeFromDynamic<List<StoneWithVotes>>(it) }
-
-
-fun addStone(newStone: StoneData, user: User): Promise<Long> =
-    window.fetch(
-        "/api/stones", RequestInit(method = "POST",
-            headers = Headers().apply {
-                set("Content-Type", "application/json")
-                set("Authorization", user.autHeader())
-            },
-            body = JSON.stringify(newStone) { key, value ->
-                when (value) {
-                    is BigDecimal -> value.toString()
-                    else -> value
-                }
-            })
-    ).then { it.json().unsafeCast<Long>() }
-
-fun voteStone(id:StoneId, user: User) : Promise<Unit> =
-    window.fetch(
-        "/api/stones/${id}/vote", RequestInit(method = "POST",
-            headers = Headers().apply {
-                set("Content-Type", "application/json")
-                set("Authorization", user.autHeader())
-            },
-        )
-    ).then { it.json().unsafeCast<Long>() }
 
