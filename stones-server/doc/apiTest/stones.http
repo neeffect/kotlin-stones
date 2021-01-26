@@ -29,3 +29,11 @@ Authorization: Basic ZWRpdG9yOmVkaXRvcg==
 
 ###
 GET http://localhost:3000/
+
+
+
+###
+GET http://localhost:3000/api/stones?qw
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTE2MTA0NTMsImlhdCI6MTYxMTYwOTQ1MywiaXNzIjoia290bGluLXN0b25lcyIsInN1YiI6IjU4MGY1Nzk1LWQ0MDYtOGRlNy03YTUyLTRjZTE4YWViZTkyZSIsImxvZ2luIjoiZ29vZ2xlOjEwODg3NDQ1NDY3NjI0NDcwMDM4MCIsImRpc3BsYXlOYW1lIjoiSmFyZWsgUmF0YWpza2kiLCJpZCI6IjU4MGY1Nzk1LWQ0MDYtOGRlNy03YTUyLTRjZTE4YWViZTkyZSIsInJvbGVzIjoid3JpdGVyIn0.oPDHBNVliUCXh0OV0nOjjmOehBgtEmAvAQvU_OCwxfI
+
+

@@ -4,23 +4,17 @@ import dev.neeffect.nee.ctx.web.oauth.OauthSupportApi
 import dev.neeffect.nee.security.UserRole
 import dev.neeffect.nee.security.jwt.JwtConfig
 import dev.neeffect.nee.security.oauth.*
+import dev.neeffect.nee.security.oauth.config.OauthModule
 import io.vavr.collection.Seq
 import io.vavr.kotlin.list
 import pl.setblack.kstones.infrastructure.InfrastuctureModule
 
-class OauthModule(
-    oathConfig: OauthConfig,
-    jwtConfig: JwtConfig
-)  : SimpleOauthConfigModule(oathConfig, jwtConfig) {
+class StonesOauthModule(
+    internal val oauthModule: OauthModule
+)  {
 
-    val oauthService by lazy {
-        OauthService(this)
-    }
     val oauthApi by lazy {
-        OauthSupportApi(oauthService)
+        OauthSupportApi(oauthModule.oauthService)
     }
 
-    override val userRoles: (OauthProviderName, OauthResponse) -> Seq<UserRole> = { _,_->
-        list(InfrastuctureModule.SecurityRoles.writer)
-    }
 }

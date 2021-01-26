@@ -55,7 +55,7 @@ class StoneRepo(
                     record[5] != null
                 )
             }
-            .toVavrList().also {println(votesOf)}
+            .toVavrList()
     }
 
     fun readStone(id:StoneId) = Nee.with(

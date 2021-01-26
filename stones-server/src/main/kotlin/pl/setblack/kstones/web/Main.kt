@@ -1,9 +1,8 @@
 package pl.setblack.kstones.web
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import dev.neeffect.nee.security.jwt.JwtConfig
-import dev.neeffect.nee.security.oauth.OauthConfig
 import dev.neeffect.nee.security.oauth.config.OauthConfigLoder
+import dev.neeffect.nee.security.oauth.config.RolesMapper
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -15,17 +14,18 @@ import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.vavr.jackson.datatype.VavrModule
+import io.vavr.kotlin.list
 import pl.setblack.kstones.db.DbConnection.jdbcConfig
 import pl.setblack.kstones.db.initializeDb
-import pl.setblack.kstones.oauth.OauthModule
+import pl.setblack.kstones.infrastructure.InfrastuctureModule
+import pl.setblack.kstones.oauth.StonesOauthModule
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.sql.DriverManager
 
-internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
-    val oauthModule = OauthModule(config.second, config.first)
-    val webModule = WebModule(oauthModule.jwtConfigModule)
+internal fun startServer(oauthModule: StonesOauthModule) {
+    val webModule = WebModule(oauthModule.oauthModule.jwtConfigModule)
 
     val server = embeddedServer(Netty, port = 3000) {
 
@@ -42,14 +42,14 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
                 call.respond(HttpStatusCode.InternalServerError)
             }
         }
-        routing{
+        routing {
             route("api") {
                 webModule.stoneRest.api()()
                 oauthModule.oauthApi.oauthApi()()
             }
 
-            get("/"){
-                call.respondText ("ok")
+            get("/") {
+                call.respondText("ok")
             }
 
         }
@@ -67,11 +67,11 @@ internal fun startServer(config: Pair<JwtConfig, OauthConfig>) {
 }
 
 private fun dumpFiles(path: Path) {
-    Files.newDirectoryStream(path).forEach {filePath ->
+    Files.newDirectoryStream(path).forEach { filePath ->
         if (Files.isRegularFile(filePath)) {
             println("reading content of: $filePath")
             val content = Files.readString(filePath)
-            println( "contet of $filePath is\n $content")
+            println("contet of $filePath is\n $content")
         } else {
             println("not regular file: $filePath")
         }
@@ -80,25 +80,28 @@ private fun dumpFiles(path: Path) {
 
 fun main() {
     println("starting")
+
+    val rolesMapper: RolesMapper = { _, _ ->
+        list(InfrastuctureModule.SecurityRoles.writer)
+    }
     val secPath = Paths.get("securedEtc").toAbsolutePath()
     dumpFiles(secPath)
     if (Files.exists(secPath)) {
         try {
             val oauthConfigLoder = OauthConfigLoder(secPath)
-            oauthConfigLoder.loadJwtConfig().flatMap { jwtConfig ->
-                oauthConfigLoder.loadOauthConfig().map {oauthConfig ->
-                    Pair(jwtConfig, oauthConfig)
+            oauthConfigLoder.loadConfig(rolesMapper)
+                .map { config ->
+                    StonesOauthModule(config)
+
                 }
-            }.map {  config ->
-                startServer(config)
-            }.mapLeft { configError ->
-                println("error loading config: $configError")
-            }
-        } catch (e : Exception) {
+                .map { oauth ->
+                    startServer(oauth)
+                }.mapLeft { configError ->
+                    println("error loading config: $configError")
+                }
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
-
 
     } else {
         println("directory: $secPath does not exist")

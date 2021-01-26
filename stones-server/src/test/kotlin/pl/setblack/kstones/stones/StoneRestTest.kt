@@ -26,7 +26,6 @@ import io.kotest.matchers.shouldBe
 import io.vavr.kotlin.list
 import pl.setblack.kotlinStones.StoneWithVotes
 import pl.setblack.kstones.infrastructure.InfrastuctureModule
-import pl.setblack.kstones.oauth.OauthModule
 import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
 import pl.setblack.kstones.web.WebModule
 import java.time.Clock

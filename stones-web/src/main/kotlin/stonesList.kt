@@ -7,11 +7,13 @@ import com.ccfraser.muirwik.components.card.mCardActions
 import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.list.*
+import kotlinx.browser.window
 import kotlinx.css.*
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneWithVotes
 import react.functionalComponent
 import react.useEffect
+import react.useReducer
 import react.useState
 import services.addStone
 import services.fetchStones
@@ -28,10 +30,16 @@ val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
     val (stones, setStones) = useState(StonesState())
 
-    useEffect(listOf(user)) {
+    val (counter, pushCounter) = useReducer({s:Int,_:Any-> s+1},1)
+    useEffect(listOf(user, counter)) {
+
         fetchStones(user).then {
             setStones(stones.copy(stones = it))
         }
+    }
+
+    useEffect(emptyList()) {
+        window.setInterval({ pushCounter(1) }, 10000)
     }
 
 
