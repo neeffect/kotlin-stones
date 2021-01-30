@@ -66,18 +66,6 @@ internal fun startServer(oauthModule: StonesOauthModule) {
     server.start(wait = true)
 }
 
-private fun dumpFiles(path: Path) {
-    Files.newDirectoryStream(path).forEach { filePath ->
-        if (Files.isRegularFile(filePath)) {
-            println("reading content of: $filePath")
-            val content = Files.readString(filePath)
-            println("contet of $filePath is\n $content")
-        } else {
-            println("not regular file: $filePath")
-        }
-    }
-}
-
 fun main() {
     println("starting")
 
@@ -85,7 +73,6 @@ fun main() {
         list(InfrastuctureModule.SecurityRoles.writer)
     }
     val secPath = Paths.get("securedEtc").toAbsolutePath()
-    dumpFiles(secPath)
     if (Files.exists(secPath)) {
         try {
             val oauthConfigLoder = OauthConfigLoder(secPath)
@@ -104,7 +91,7 @@ fun main() {
         }
 
     } else {
-        println("directory: $secPath does not exist")
+        println("directory: $secPath with security config does not exist")
     }
 
 

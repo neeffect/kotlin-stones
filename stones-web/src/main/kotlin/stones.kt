@@ -6,4 +6,5 @@ val stones = functionalComponent<AppProps> { props ->
     styledDiv {
         child(stonesList, props)
     }
+
 }

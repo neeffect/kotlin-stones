@@ -13,4 +13,17 @@ object StonesStyles : StyleSheet("StoneStyles", isStatic = true) {
             height = 46.px
         }
     }
+
+    val colorPickerWrapper by css {
+        margin = 2.em.toString()
+        display = Display.inlineBlock
+    }
+
+    val overflowCard by css {
+        color = Color("#111111")
+
+        +"MuiCard-root" {
+            overflow = Overflow.visible
+        }
+    }
 }

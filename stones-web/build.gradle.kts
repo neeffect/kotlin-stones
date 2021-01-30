@@ -39,6 +39,7 @@ dependencies {
 
     implementation(npm("@material-ui/core", "^4.9.14"))
     implementation(npm("@material-ui/icons", "^4.9.1"))
+    implementation(npm("material-ui-color-picker", "^3.5.1"))
 
     implementation(Libs.Ktor.clientJs)
     implementation(Libs.Ktor.clientJsonJs)

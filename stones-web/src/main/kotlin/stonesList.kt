@@ -11,6 +11,7 @@ import kotlinx.browser.window
 import kotlinx.css.*
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneWithVotes
+import react.child
 import react.functionalComponent
 import react.useEffect
 import react.useReducer
@@ -32,7 +33,6 @@ val stonesList = functionalComponent<AppProps> { props ->
 
     val (counter, pushCounter) = useReducer({s:Int,_:Any-> s+1},1)
     useEffect(listOf(user, counter)) {
-
         fetchStones(user).then {
             setStones(stones.copy(stones = it))
         }
@@ -119,44 +119,7 @@ val stonesList = functionalComponent<AppProps> { props ->
                 }
             }
             if (user != null) {
-                mCard(raised = false) {
-                    mCardHeader(title = "add new stone") {
-
-                    }
-                    mCardContent {
-                        mTextField(label = "Name", value = stones.newData.name, onChange = { event ->
-                            setStones(stones.copy(newData = stones.newData.copy(name = event.targetInputValue)))
-                        }) {
-                        }
-
-                        mTextField(label = "Color", value = stones.newData.color, onChange = { event ->
-                            setStones(stones.copy(newData = stones.newData.copy(color = event.targetInputValue)))
-                        }) {
-                        }
-
-                        mTextField(label = "Size", value = stones.newData.size.toString(), onChange = { event ->
-                            setStones(stones.copy(newData = stones.newData.copy(size = event.targetInputValue.toInt())))
-                        }) {
-                        }
-                    }
-
-
-                    mCardActions {
-                        mButton("add stone", MColor.primary, variant = MButtonVariant.contained, onClick = { _ ->
-                            if (user != null) {
-                                addStone(stones.newData, user)
-                                    .then {
-                                        fetchStones(user).then {
-                                            setStones(stones.copy(stones = it))
-                                        }
-                                    }
-                            }
-
-                        }) {
-
-                        }
-                    }
-                }
+                child(addStone, StoneProps(user, stones, setStones))
             }
         }
 
