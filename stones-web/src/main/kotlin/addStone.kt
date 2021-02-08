@@ -7,8 +7,6 @@ import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
 import com.ccfraser.muirwik.components.mTextField
 import com.ccfraser.muirwik.components.targetInputValue
-import kotlinx.css.Overflow
-import kotlinx.css.overflow
 import pl.setblack.kotlinStones.StoneData
 import react.RProps
 import react.functionalComponent
@@ -62,7 +60,7 @@ val addStone = functionalComponent<StoneProps> { props ->
 
 
         mCardActions {
-            mButton("add stone", MColor.primary, disabled = !stones.newData.isValid(), variant = MButtonVariant.contained, onClick = { _ ->
+            mButton("add stone", MColor.primary, disabled = !stones.newData.valid(), variant = MButtonVariant.contained, onClick = { _ ->
                 addStone(stones.newData, user)
                     .then {
                         fetchStones(user).then {

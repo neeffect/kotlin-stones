@@ -14,6 +14,7 @@ data class StoneWithVotes(val stone: Stone, val votes: Int, val myVote: Boolean)
 
 @Serializable
 data class StoneData(val name: String = "", val color: String = "#000000", val size: Int = 5) {
-    fun isValid(): Boolean =
+
+    fun valid(): Boolean =
         name.isNotEmpty() && size > 0
 }

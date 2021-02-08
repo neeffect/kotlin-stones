@@ -1,36 +1,23 @@
+import com.ccfraser.muirwik.components.MColor
+import com.ccfraser.muirwik.components.button.MButtonVariant
 import com.ccfraser.muirwik.components.button.mButton
 import com.ccfraser.muirwik.components.dialog.mDialog
 import com.ccfraser.muirwik.components.dialog.mDialogActions
-import com.ccfraser.muirwik.components.dialog.mDialogContent
 import com.ccfraser.muirwik.components.dialog.mDialogTitle
-import com.ccfraser.muirwik.components.mSvgIcon
-import com.ccfraser.muirwik.components.mTextField
-import com.ccfraser.muirwik.components.targetInputValue
-import io.ktor.client.*
-import io.ktor.client.engine.js.*
-import io.ktor.client.request.*
-import io.ktor.utils.io.core.*
 import kotlinx.browser.window
-import kotlinx.html.InputType
-import react.RProps
-import react.functionalComponent
-import react.useState
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.promise
-import kotlinx.css.Image
-import kotlinx.css.backgroundImage
-import kotlinx.html.classes
+import kotlinx.css.*
 import kotlinx.serialization.Serializable
 import org.w3c.dom.url.URLSearchParams
-import react.dom.img
+import react.RProps
+import react.functionalComponent
 import react.useEffect
+import react.useState
 import services.baseUrl
+import services.getGithubOauthUrl
 import services.getGoogleOauthUrl
 import services.loginUser
+import services.redirectUri
 import styled.css
-import styled.styledI
 
 data class LoginDialog(val opened: Boolean = false, val setUser: (User) -> Unit) : RProps
 
@@ -49,17 +36,33 @@ val loginDialog = functionalComponent<LoginDialog> { props ->
 
     mDialog(props.opened) {
         mDialogTitle("Login")
-//        mDialogContent {
-//            mTextField(label = "login", value = login, onChange = { event -> setLogin(event.targetInputValue) })
-//            mTextField(label = "password", type = InputType.password,
-//                value = password, onChange = { event -> setPassword(event.targetInputValue) })
-//        }
-        mDialogActions {
-//            mButton("login", onClick = {
-//                props.setUser(User(login, password))
-//
-//            })
 
+        mDialogActions {
+
+            mButton("Sign in with Github",
+                color = MColor.secondary,
+                variant = MButtonVariant.contained,
+                onClick = {
+                    getGithubOauthUrl().then { url ->
+                        window.location.assign(url)
+                    }
+                }) {
+                css {
+                    +StonesStyles.googleLogin
+                    +"MuiButtonBase-root" {
+                        backgroundImage = Image("url(/icons/github/GitHub-Mark-32px.png)")
+                        backgroundRepeat = BackgroundRepeat.noRepeat
+                        backgroundPosition = "2% 50%"
+                        backgroundColor = Color("#ffffff")
+                        paddingLeft = 24.px
+                        fontSize = 13.px
+                        height = 40.px
+                        textTransform = TextTransform.none
+                        color = Color("#666666")
+                    }
+
+                }
+            }
             mButton("", onClick = {
                 getGoogleOauthUrl().then { url ->
                     window.location.assign(url)
@@ -77,12 +80,13 @@ val loginDialog = functionalComponent<LoginDialog> { props ->
 
 fun checkOauthLogin(props: LoginDialog) {
     val location = window.location.href
-    if (location.contains("?state=")) {
+    if (location.contains("?auth=")) {
         val searchParams = URLSearchParams(window.location.search.substring(1))
         val state = searchParams.get("state")?.replace(" ", "+")
         val code = searchParams.get("code")
-        val data = LocalOauthLoginData(code!!, state!!, baseUrl)
-        loginUser(data).then { jwtLogin ->
+        val provider = searchParams.get("auth")!!
+        val data = LocalOauthLoginData(code!!, state!!, redirectUri(provider))
+        loginUser(provider, data).then { jwtLogin ->
             window.history.pushState("", "Stones (logged)", "/")
             props.setUser(User(jwtLogin.displayName, gtoken = jwtLogin.encodedToken))
         }
@@ -95,4 +99,5 @@ data class LocalOauthLoginData(
     val state: String,
     val redirectUri: String
 )
+
 

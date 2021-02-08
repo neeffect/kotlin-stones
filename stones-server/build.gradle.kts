@@ -40,6 +40,13 @@ dependencies {
     implementation(Libs.Ktor.clientJvm)
     implementation(Libs.Ktor.clientCIO)
 
+// https://mvnrepository.com/artifact/io.netty/netty-transport-native-epoll
+    implementation( group = "io.netty",
+        name ="netty-transport-native-epoll",
+        version= "4.1.54.Final",
+        classifier = "linux-x86_64")
+
+
     implementation(project(":stones-common"))
 // https://mvnrepository.com/artifact/xerces/xercesImpl
     //added only because konf brings own horrible parses and kill liquibase //is it konf

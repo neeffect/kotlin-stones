@@ -5,6 +5,7 @@ import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.ClassLoaderResourceAccessor
 import dev.neeffect.nee.effects.jdbc.JDBCConfig
+import liquibase.database.core.H2Database
 import java.sql.Connection
 
 object DbConnection {
@@ -17,7 +18,11 @@ object DbConnection {
 }
 
 fun initializeDb(dbConnection:Connection)  {
-    val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dbConnection))
-    val liquibaseChangeLog = Liquibase("db/db.changelog-master.xml", ClassLoaderResourceAccessor(), database)
+    val database = H2Database().apply {
+        connection = JdbcConnection(dbConnection)
+    }
+    val resourceAccessor = ClassLoaderResourceAccessor(DbConnection::class.java.classLoader)
+    //val database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(dbConnection))
+    val liquibaseChangeLog = Liquibase("db/db.changelog-master.xml", resourceAccessor, database)
     liquibaseChangeLog.update(liquibase.Contexts(), liquibase.LabelExpression())
 }
