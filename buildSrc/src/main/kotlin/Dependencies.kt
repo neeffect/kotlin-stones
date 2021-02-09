@@ -74,6 +74,7 @@ object Libs {
         //every time I use  it I waste a lot of time
         //just a note that more time was wasted
         const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
+        const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     }
 
 }

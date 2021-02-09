@@ -30,6 +30,7 @@ repositories {
 
 dependencies {
     implementation(Libs.JOOQ.jooq)
+    implementation(Libs.Kotlin.reflect)
     implementation(Libs.H2.database)
     jooqGenerator(Libs.H2.database)
 

@@ -29,14 +29,13 @@ internal val startTime = System.currentTimeMillis()
 
 internal fun startServer(oauthModule: StonesOauthModule) {
     val webModule = WebModule(oauthModule.oauthModule.jwtConfigModule)
-    upgradeDatabase()
+
 
     LoggerFactory.getLogger("main").info("starting server")
     val server = embeddedServer(Netty, port = 3000, watchPaths = emptyList()) {
 
         install(ContentNegotiation) {
-            jackson {
-                //TODO check if needed
+           jackson {
                 this.registerModule(VavrModule())
                 this.registerModule(KotlinModule())
             }
@@ -66,17 +65,7 @@ internal fun startServer(oauthModule: StonesOauthModule) {
     LoggerFactory.getILoggerFactory().getLogger("main").info("started in $startupTime ms")
 }
 
-private fun upgradeDatabase() {
-    GlobalScope.launch {
-        DriverManager.getConnection(
-            jdbcConfig.url,
-            jdbcConfig.user,
-            jdbcConfig.password
-        ).use {
-           // initializeDb(it)
-        }
-    }
-}
+
 
 fun main() {
     LoggerFactory.getILoggerFactory().getLogger("main").info("starting")
@@ -91,7 +80,6 @@ fun main() {
             oauthConfigLoder.loadConfig(rolesMapper)
                 .map { config ->
                     StonesOauthModule(config)
-
                 }
                 .map { oauth ->
                     startServer(oauth)
