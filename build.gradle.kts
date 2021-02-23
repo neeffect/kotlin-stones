@@ -1,11 +1,14 @@
 
 group "pl.setblack"
 version "1.0-SNAPSHOT"
+
 plugins {
-    val kotlinVersion = "1.4.21"
+    val kotlinVersion = Libs.kotlin_version
+    id("org.jetbrains.kotlin.jvm") version kotlinVersion apply false
     id("org.jetbrains.kotlin.js") version kotlinVersion apply false
     id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion apply false
 }
+
 allprojects {
     repositories {
         jcenter()

@@ -6,8 +6,9 @@ import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.gradle.kotlin.dsl.exclude
 
 object Libs {
-    const val kotlin_version = "1.4.21"
-    const val liquibase_version="3.6.1"
+    const val kotlin_version = "1.4.30"
+//    const val liquibase_version="3.6.1"
+    const val nee_version = "0.6.7-LOCAL"
 
     object H2 {
         private const val version = "1.4.200"
@@ -20,7 +21,7 @@ object Libs {
     }
 
     object Nee {
-        private const val version = "0.6.6"
+        private const val version = nee_version
         const val ctxWebKtor = "pl.setblack:nee-ctx-web-ktor:$version"
         const val jdbc = "pl.setblack:nee-jdbc:$version"
         const val securityJdbc = "pl.setblack:nee-security-jdbc:$version"
@@ -39,13 +40,13 @@ object Libs {
             exclude("org.jetbrains.kotlin")
         }
         object Versions {
-            private const val version = "2.11.3"
+            private const val version = "2.12.1"
             const val moduleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:$version"
         }
     }
 
     object Ktor {
-        private const val  version = "1.5.0"
+        private const val  version = "1.5.1"
         const val clientJs = "io.ktor:ktor-client-js:$version"
         const val clientJvm = "io.ktor:ktor-client-core-jvm:$version"
         const val clientApache = "io.ktor:ktor-client-apache:$version"
@@ -68,15 +69,29 @@ object Libs {
         }
     }
 
+    object Kotest {
+        private const val version = "4.4.1"
+        const val runnerJunit5Jvm ="io.kotest:kotest-runner-junit5-jvm:$version"
+        const val assertionsCoreJvm = "io.kotest:kotest-assertions-core-jvm:$version"
+    }
+
     object Kotlin {
-        private const val serializationVersion = "1.0.1"
+        private const val serializationVersion = "1.1.0-RC"
+        private const val coroutinesVersion  = "1.4.2"
         const val kotlinStdLib =  "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         //every time I use  it I waste a lot of time
         //just a note that more time was wasted
-        const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
+        const val serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+        const val serializationCore = "org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion"
+        const val coroutinesCore  = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     }
 
+
+    object Liquibase {
+        private const val version = "4.3.1"
+        const val core = "org.liquibase:liquibase-core:$version"
+    }
 }
 
 
@@ -90,12 +105,6 @@ fun impl(lib: String, dependencyConfiguration: Action<ExternalModuleDependency> 
         this, "implementation", lib, dependencyConfiguration
     ) as ExternalModuleDependency
 }
-/*
-
-addDependencyTo(
-    this, "implementation", dependencyNotation, dependencyConfiguration
-) as ExternalModuleDependency
- */
 
 internal object EmptyAction : Action<ExternalModuleDependency> {
     override fun execute(t: ExternalModuleDependency) {

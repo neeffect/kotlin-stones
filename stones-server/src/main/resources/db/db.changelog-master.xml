@@ -8,5 +8,4 @@
 
     <!--includeAll path="changelogs" relativeToChangelogFile="true"/-->
     <include file="changelogs/initial.1.sql" relativeToChangelogFile="true"/>
-    <include file="changelogs/users-db.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

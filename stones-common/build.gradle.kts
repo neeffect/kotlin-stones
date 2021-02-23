@@ -14,9 +14,8 @@ kotlin {
             resources.srcDir("src/main/resources")
             dependencies {
                 Libs.KtMath.ktMath
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+                implementation(Libs.Kotlin.serializationJson)
             }
-
         }
     }
     jvm()

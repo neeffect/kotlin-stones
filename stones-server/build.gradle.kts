@@ -5,15 +5,9 @@ import org.gradle.jvm.tasks.Jar
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("nu.studer.jooq") version "5.1.1"
-    id("org.liquibase.gradle") version "2.0.3"
-    id("application")
-    id("idea")
-    id("java")
+    id("org.liquibase.gradle") version "2.0.4"
     id("org.jetbrains.kotlin.plugin.serialization")
 }
-
-
-val h2_version = "1.4.200"
 
 
  val db = mapOf(
@@ -49,31 +43,28 @@ dependencies {
 
 
     implementation(project(":stones-common"))
-// https://mvnrepository.com/artifact/xerces/xercesImpl
-    //added only because konf brings own horrible parses and kill liquibase //is it konf
-    implementation( group ="xerces", name = "xercesImpl", version = "2.12.0")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
+
     Libs.Jackson.moduleKotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+
     // implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation(Libs.Ktor.serverNetty)
     implementation(Libs.Ktor.jackson)
     implementation(Libs.Vavr.kotlin)
     implementation(Libs.Vavr.jackson)
 
-    implementation(group = "org.liquibase", name = "liquibase-core", version = "3.6.1")
+    implementation(Libs.Liquibase.core)
 
-    liquibaseRuntime("org.liquibase:liquibase-core:3.6.1")
+    liquibaseRuntime(Libs.Liquibase.core)
     liquibaseRuntime(Libs.H2.database)
 
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.0")
+    testImplementation(Libs.Kotest.runnerJunit5Jvm)
 
     testImplementation(Libs.Ktor.serverTestHost)
     testImplementation(Libs.Nee.jdbcTest)
     testImplementation(Libs.Nee.ctxWebTest)
-    implementation(Libs.Kotlin.serialization)
-   // implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1")
+    implementation(Libs.Kotlin.serializationJson)
+    implementation (Libs.Kotlin.serializationCore)
 }
 
 java {
@@ -87,7 +78,6 @@ tasks.withType<Test> {
 }
 
 liquibase {
-
     activities.register("main") {
         val db_url = db["url"]
         val db_user =  db["user"]
@@ -95,7 +85,7 @@ liquibase {
 
         this.arguments = mapOf(
             "logLevel" to "info",
-            "changeLogFile" to "${projectDir}/src/main/resources/db/db.changelog-master.xml",
+            "changeLogFile" to "stones-server/src/main/resources/db/db.changelog-master.xml",
             "url" to db_url,
             "username" to db_user,
             "password" to db_pass
@@ -181,7 +171,3 @@ tasks {
         dependsOn(fatJar)
     }
 }
-
-
-
-
