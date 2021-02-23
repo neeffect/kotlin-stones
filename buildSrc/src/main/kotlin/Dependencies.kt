@@ -6,7 +6,8 @@ import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 import org.gradle.kotlin.dsl.exclude
 
 object Libs {
-    const val kotlin_version = "1.4.21"
+    const val kotlin_version = "1.4.30"
+    const val nee_version = "0.6.7-LOCAL"
     const val liquibase_version="3.6.1"
 
     object H2 {
@@ -20,12 +21,13 @@ object Libs {
     }
 
     object Nee {
-        private const val version = "0.6.6"
+        private const val version = nee_version
         const val ctxWebKtor = "pl.setblack:nee-ctx-web-ktor:$version"
         const val jdbc = "pl.setblack:nee-jdbc:$version"
         const val securityJdbc = "pl.setblack:nee-security-jdbc:$version"
         const val  jdbcTest = "pl.setblack:nee-security-jdbc-test:$version"
         const val  ctxWebTest = "pl.setblack:nee-ctx-web-test:$version"
+        const val  serialization = "pl.setblack:nee-serialization:$version"
     }
 
     object Vavr {
@@ -45,10 +47,9 @@ object Libs {
     }
 
     object Ktor {
-        private const val  version = "1.5.0"
+        private const val  version = "1.5.1"
         const val clientJs = "io.ktor:ktor-client-js:$version"
         const val clientJvm = "io.ktor:ktor-client-core-jvm:$version"
-        const val clientApache = "io.ktor:ktor-client-apache:$version"
         const val clientCIO = "io.ktor:ktor-client-cio:$version"
         const val clientJsonJs = "io.ktor:ktor-client-json-js:$version"
         const val clientSerialization = "io.ktor:ktor-client-serialization:$version"
@@ -56,6 +57,7 @@ object Libs {
         const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
         const val serverNetty = "io.ktor:ktor-server-netty:$version"
         const val jackson = "io.ktor:ktor-jackson:$version"
+        const val serialization = "io.ktor:ktor-serialization:$version"
     }
 
     object KtMath {
@@ -69,7 +71,7 @@ object Libs {
     }
 
     object Kotlin {
-        private const val serializationVersion = "1.0.1"
+        private const val serializationVersion = "1.1.0-RC"
         const val kotlinStdLib =  "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         //every time I use  it I waste a lot of time
         //just a note that more time was wasted

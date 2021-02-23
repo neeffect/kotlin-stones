@@ -1,29 +1,32 @@
+
 package pl.setblack.kstones.stones
 
-import com.fasterxml.jackson.core.type.TypeReference
-import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.be
-import io.kotest.matchers.should
-import io.ktor.http.*
-import io.ktor.routing.routing
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.handleRequest
-import io.ktor.server.testing.setBody
-import io.vavr.collection.List
-import io.vavr.control.Option
-import io.vavr.kotlin.some
-import pl.setblack.kotlinStones.Stone
-import pl.setblack.kotlinStones.StoneId
 import dev.neeffect.nee.effects.jdbc.JDBCProvider
 import dev.neeffect.nee.effects.time.HasteTimeProvider
 import dev.neeffect.nee.security.User
 import dev.neeffect.nee.security.UserRole
-import dev.neeffect.nee.security.jwt.*
+import dev.neeffect.nee.security.jwt.JwtConfig
+import dev.neeffect.nee.security.jwt.JwtConfigurationModule
+import dev.neeffect.nee.security.jwt.SimpleUserCoder
+import dev.neeffect.nee.security.jwt.UserCoder
 import dev.neeffect.nee.security.test.TestDB
 import dev.neeffect.nee.web.test.TestWebContextProvider
 import io.haste.Haste
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.be
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.ktor.http.*
+import io.ktor.routing.*
+import io.ktor.server.testing.*
+import io.vavr.collection.List
+import io.vavr.control.Option
 import io.vavr.kotlin.list
+import io.vavr.kotlin.some
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.decodeFromString
+import pl.setblack.kotlinStones.Stone
+import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kotlinStones.StoneWithVotes
 import pl.setblack.kstones.infrastructure.InfrastuctureModule
 import pl.setblack.kstones.stones.StoneRestTest.Companion.OauthTestConfig.jwtModule
@@ -56,8 +59,6 @@ internal class StoneRestTest : DescribeSpec({
                 val jwt = jwtModule.jwtUsersCoder.encodeUser(user)
                 val signed = jwtModule.jwtCoder.signJwt(jwt)
                 signed should be(expectedWriterToken)
-
-
             }
 
             it("should display no stones when empty") {
@@ -89,10 +90,7 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Bearer $expectedWriterToken")
                 }.response.content
 
-                val stoneAdded = testWeb.jacksonMapper.readValue<Option<StoneId>>(
-                    stonesString,
-                    object : TypeReference<Option<StoneId>>() {
-                    })
+                val stoneAdded = testWeb.jsonMapper.decodeFromString<Option<StoneId>>(stonesString!!)
                 stoneAdded should be(some(1L))
             }
             it("should add  second stone ") {
@@ -105,10 +103,8 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Bearer $expectedWriterToken")
                 }.response.content
 
-                val stoneAdded = testWeb.jacksonMapper.readValue<Option<StoneId>>(
-                    stonesString,
-                    object : TypeReference<Option<StoneId>>() {
-                    })
+                val stoneAdded = testWeb.jsonMapper.decodeFromString<Option<StoneId>>(
+                    stonesString!!)
                 stoneAdded should be(some(2L))
             }
             it("added stones should be returned ") {
@@ -119,9 +115,7 @@ internal class StoneRestTest : DescribeSpec({
                     this.addHeader("Authorization", "Bearer $expectedWriterToken")
                 }.response.content
 
-                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
-                    object : TypeReference<List<StoneWithVotes>>() {
-                    })
+                val stones = testWeb.jsonMapper.decodeFromString<List<StoneWithVotes>>(stonesString!!)
                 stones.size() should be(2)
             }
             it("second stone should be returned ") {
@@ -130,7 +124,7 @@ internal class StoneRestTest : DescribeSpec({
                     HttpMethod.Get, "/stones/2"
                 ).response.content
 
-                val stone = testWeb.jacksonMapper.readValue(stonesString, Stone::class.java)
+                val stone = testWeb.jsonMapper.decodeFromString<Stone>(stonesString!!)
                 stone.data.name should be("burp")
             }
             it ("should allow vote") {
@@ -145,9 +139,7 @@ internal class StoneRestTest : DescribeSpec({
                 val stonesString = engine.handleRequest(
                     HttpMethod.Get, "/stones"
                 ).response.content
-                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
-                    object : TypeReference<List<StoneWithVotes>>() {
-                    })
+                val stones = testWeb.jsonMapper.decodeFromString<List<StoneWithVotes>>(stonesString!!)
                 stones.first { it.stone.id == 2L }.votes shouldBe (1)
             }
             it ("should return that person voted") {
@@ -156,9 +148,7 @@ internal class StoneRestTest : DescribeSpec({
                 ) {
                     this.addHeader("Authorization", "Bearer $expectedWriterToken")
                 }.response.content
-                val stones = testWeb.jacksonMapper.readValue<List<StoneWithVotes>>(stonesString,
-                    object : TypeReference<List<StoneWithVotes>>() {
-                    })
+                val stones = testWeb.jsonMapper.decodeFromString<List<StoneWithVotes>>(stonesString!!)
                 stones.first { it.stone.id == 2L }.myVote shouldBe (true)
             }
         }

@@ -1,14 +1,26 @@
+@file:UseSerializers(VavrSerializers.OptionSerializer::class, VavrSerializers.ListSerializer::class)
 package pl.setblack.kstones.web
 
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.jackson.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.vavr.jackson.datatype.VavrModule
+import dev.neeffect.nee.serializers.UUIDSerializer
+import dev.neeffect.nee.serializers.VavrSerializers
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.request.receive
+import io.ktor.response.respondText
+import io.ktor.routing.Route
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.serialization.json
+import io.vavr.control.Option
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.UseSerializers
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.serializer
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.stones.StoneService
 import pl.setblack.kstones.votes.VoteService
@@ -21,10 +33,9 @@ class StoneRest(
 
     fun api(): Route.() -> Unit = {
         install(ContentNegotiation) {
-            jackson {
-                this.registerModule(VavrModule())
-                this.registerModule(KotlinModule())
-            }
+            json  ( Json {
+                     serializersModule = module
+            })
         }
         get("/stones/{id}") {
             val id = call.parameters["id"]!!.toLong()
@@ -33,7 +44,7 @@ class StoneRest(
         }
         get("/stones") {
             val stones = stoneService
-                .allStones()
+                .allStones().map {  list -> list.toJavaList() }
             webContext.create(call).serveMessage(webContext.async { stones })
         }
         post("/stones/{id}/vote") {
@@ -46,7 +57,7 @@ class StoneRest(
             val newStone = call.receive<StoneData>()
             val stoneAdded =
                 stoneService.addStone(newStone)
-            webContext.create(call).serveMessage(webContext.async { stoneAdded })
+            webContext.create(call).serveMessage<Option<Long>>(webContext.async { stoneAdded })
         }
         get("/demo") {
             call.respondText("HELLO WORLD!")
@@ -57,3 +68,15 @@ class StoneRest(
 }
 
 
+@Suppress("UNCHECKED_CAST")
+val module = SerializersModule {
+    //val anyOptionSerializer = serializer(Option::class.java) as KSerializer<Option<*>>
+    val zSerializer =  serializer<Option<Any>>()
+    contextual(UUIDSerializer())
+    polymorphic(Option::class) {
+        default { _ ->
+//            anyOptionSerializer
+            zSerializer
+        }
+    }
+}

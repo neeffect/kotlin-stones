@@ -7,7 +7,6 @@ import dev.neeffect.nee.security.oauth.config.RolesMapper
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.jackson.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
@@ -34,12 +33,7 @@ internal fun startServer(oauthModule: StonesOauthModule) {
     LoggerFactory.getLogger("main").info("starting server")
     val server = embeddedServer(Netty, port = 3000, watchPaths = emptyList()) {
 
-        install(ContentNegotiation) {
-           jackson {
-                this.registerModule(VavrModule())
-                this.registerModule(KotlinModule())
-            }
-        }
+
         install(StatusPages) {
             exception<Throwable> { cause ->
                 cause.printStackTrace()

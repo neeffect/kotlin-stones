@@ -19,16 +19,16 @@ repositories {
 }
 
 dependencies {
-    val kotlinVersion = "1.4.0"
-    val kotlinJsVersion = "pre.112-kotlin-$kotlinVersion"
-    val kotlinReactVersion = "16.13.1-$kotlinJsVersion"
+    val kotlinVersion = "1.4.30"
+    val kotlinJsVersion = "pre.146-kotlin-$kotlinVersion"
+    val kotlinReactVersion = "17.0.1-$kotlinJsVersion"
 
     implementation(project(":stones-common"))
     implementation(kotlin("stdlib-js", kotlinVersion))
 
     implementation("org.jetbrains", "kotlin-react", kotlinReactVersion)
     implementation("org.jetbrains", "kotlin-react-dom", kotlinReactVersion)
-    implementation("org.jetbrains", "kotlin-styled", "1.0.0-$kotlinJsVersion")
+    implementation("org.jetbrains", "kotlin-styled", "5.2.1-$kotlinJsVersion")
     implementation(npm("react-hot-loader", "^4.12.20"))
 
     implementation(devNpm("webpack-bundle-analyzer", "^3.8.0"))

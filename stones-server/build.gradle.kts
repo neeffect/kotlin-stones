@@ -16,9 +16,9 @@ plugins {
 val h2_version = "1.4.200"
 
 
- val db = mapOf(
-    "url"      to  "jdbc:h2:${projectDir}/build/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET",
-    "user"     to "sa",
+val db = mapOf(
+    "url" to "jdbc:h2:${projectDir}/build/kotlin-stones;AUTO_SERVER=TRUE;FILE_LOCK=SOCKET",
+    "user" to "sa",
     "password" to ""
 )
 
@@ -37,27 +37,32 @@ dependencies {
     implementation(Libs.Nee.ctxWebKtor)
     implementation(Libs.Nee.jdbc)
     implementation(Libs.Nee.securityJdbc)
+    implementation(Libs.Nee.serialization)
+
 
     implementation(Libs.Ktor.clientJvm)
     implementation(Libs.Ktor.clientCIO)
 
 // https://mvnrepository.com/artifact/io.netty/netty-transport-native-epoll
-    implementation( group = "io.netty",
-        name ="netty-transport-native-epoll",
-        version= "4.1.54.Final",
-        classifier = "linux-x86_64")
+    implementation(
+        group = "io.netty",
+        name = "netty-transport-native-epoll",
+        version = "4.1.54.Final",
+        classifier = "linux-x86_64"
+    )
 
 
     implementation(project(":stones-common"))
 // https://mvnrepository.com/artifact/xerces/xercesImpl
     //added only because konf brings own horrible parses and kill liquibase //is it konf
-    implementation( group ="xerces", name = "xercesImpl", version = "2.12.0")
+    implementation(group = "xerces", name = "xercesImpl", version = "2.12.0")
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
     Libs.Jackson.moduleKotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     // implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation(Libs.Ktor.serverNetty)
-    implementation(Libs.Ktor.jackson)
+    //implementation(Libs.Ktor.jackson)
+    implementation(Libs.Ktor.serialization)
     implementation(Libs.Vavr.kotlin)
     implementation(Libs.Vavr.jackson)
 
@@ -65,15 +70,15 @@ dependencies {
 
     liquibaseRuntime("org.liquibase:liquibase-core:3.6.1")
     liquibaseRuntime(Libs.H2.database)
-
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.3.0")
+    testImplementation( "io.kotest:kotest-runner-junit5:4.4.1")
+    testImplementation( "io.kotest:kotest-assertions-core:4.4.1")
 
     testImplementation(Libs.Ktor.serverTestHost)
     testImplementation(Libs.Nee.jdbcTest)
     testImplementation(Libs.Nee.ctxWebTest)
     implementation(Libs.Kotlin.serialization)
-   // implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1")
+    // implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+   // implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0-RC")
 }
 
 java {
@@ -90,8 +95,8 @@ liquibase {
 
     activities.register("main") {
         val db_url = db["url"]
-        val db_user =  db["user"]
-        val db_pass =  db["password"]
+        val db_user = db["user"]
+        val db_pass = db["password"]
 
         this.arguments = mapOf(
             "logLevel" to "info",
@@ -161,9 +166,9 @@ compileKotlin.kotlinOptions.apply {
     jvmTarget = "1.8"
     javaParameters = true
     allWarningsAsErrors = true
+    freeCompilerArgs += "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"
+    freeCompilerArgs += "-Xopt-in=kotlinx.serialization.InternalSerializationApi"
 }
-
-
 
 
 val fatJar = task("fatJar", type = Jar::class) {
