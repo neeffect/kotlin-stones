@@ -53,9 +53,7 @@ dependencies {
 
 kotlin {
     println("defaultJsCompileType is $defaultJsCompilerType")
-    defaultJsCompilerType = KotlinJsCompilerType.LEGACY  // The default
-//        defaultJsCompilerType = KotlinJsCompilerType.IR
-//        defaultJsCompilerType = KotlinJsCompilerType.BOTH
+    defaultJsCompilerType = KotlinJsCompilerType.LEGACY
 
     js {
         browser {

@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.exclude
 object Libs {
     const val kotlin_version = "1.4.30"
 //    const val liquibase_version="3.6.1"
-    const val nee_version = "0.6.7-LOCAL"
+    const val nee_version = "0.6.7"
 
     object H2 {
         private const val version = "1.4.200"

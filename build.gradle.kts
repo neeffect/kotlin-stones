@@ -20,3 +20,4 @@ allprojects {
         maven("https://dl.bintray.com/cfraser/muirwik")
     }
 }
+
