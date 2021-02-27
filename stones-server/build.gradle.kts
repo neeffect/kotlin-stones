@@ -65,6 +65,9 @@ dependencies {
     testImplementation(Libs.Nee.ctxWebTest)
     implementation(Libs.Kotlin.serializationJson)
     implementation (Libs.Kotlin.serializationCore)
+
+    runtimeOnly(Libs.Hoplite.core)
+    runtimeOnly(Libs.Hoplite.yaml)
 }
 
 java {

@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.exclude
 object Libs {
     const val kotlin_version = "1.4.30"
 //    const val liquibase_version="3.6.1"
-    const val nee_version = "0.6.7"
+    const val nee_version = "0.6.8"
 
     object H2 {
         private const val version = "1.4.200"
@@ -33,6 +33,12 @@ object Libs {
         private const val version = "0.10.2"
         const val kotlin = "io.vavr:vavr-kotlin:$version"
         const val jackson  ="io.vavr:vavr-jackson:$version"
+    }
+
+    object Hoplite {
+        private const val version = "1.4.0"
+        const val core = "com.sksamuel.hoplite:hoplite-core:$version"
+        const val yaml = "com.sksamuel.hoplite:hoplite-yaml:$version"
     }
 
     object Jackson {
