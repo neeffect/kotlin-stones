@@ -2,12 +2,15 @@ package pl.setblack.kstones.web
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.jackson.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.jackson.jackson
+import io.ktor.request.receive
+import io.ktor.response.respondText
+import io.ktor.routing.Route
+import io.ktor.routing.get
+import io.ktor.routing.post
 import io.vavr.jackson.datatype.VavrModule
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.stones.StoneService

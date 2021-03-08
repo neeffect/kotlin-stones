@@ -7,9 +7,9 @@ import dev.neeffect.nee.effects.security.SecurityProvider
 import dev.neeffect.nee.security.User
 import dev.neeffect.nee.security.UserRole
 import dev.neeffect.nee.security.jwt.JwtConfigurationModule
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.request.*
+import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpHeaders
+import io.ktor.request.header
 import io.vavr.kotlin.option
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -44,10 +44,6 @@ open class InfrastuctureModule(private val jwtConfigurationModule: JwtConfigurat
         val writer = UserRole("writer")
     }
 }
-
-
-
-
 
 private fun upgradeDatabase() {
     GlobalScope.launch {

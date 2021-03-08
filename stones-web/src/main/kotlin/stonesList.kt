@@ -1,14 +1,33 @@
-import com.ccfraser.muirwik.components.*
-import com.ccfraser.muirwik.components.button.MButtonVariant
-import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.MBadgeAnchorOriginHorizontal
+import com.ccfraser.muirwik.components.MBadgeAnchorOriginVertical
+import com.ccfraser.muirwik.components.MBadgeColor
+import com.ccfraser.muirwik.components.MColor
+import com.ccfraser.muirwik.components.anchorOriginHorizontal
+import com.ccfraser.muirwik.components.anchorOriginVertical
 import com.ccfraser.muirwik.components.button.mIconButton
 import com.ccfraser.muirwik.components.card.mCard
-import com.ccfraser.muirwik.components.card.mCardActions
-import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.card.mCardHeader
-import com.ccfraser.muirwik.components.list.*
+import com.ccfraser.muirwik.components.list.mList
+import com.ccfraser.muirwik.components.list.mListItem
+import com.ccfraser.muirwik.components.list.mListItemIcon
+import com.ccfraser.muirwik.components.list.mListItemSecondaryAction
+import com.ccfraser.muirwik.components.list.mListItemText
+import com.ccfraser.muirwik.components.mBadge
+import com.ccfraser.muirwik.components.mContainer
+import com.ccfraser.muirwik.components.mIcon
+import com.ccfraser.muirwik.components.spacingUnits
 import kotlinx.browser.window
-import kotlinx.css.*
+import kotlinx.css.Color
+import kotlinx.css.backgroundColor
+import kotlinx.css.borderRadius
+import kotlinx.css.bottom
+import kotlinx.css.height
+import kotlinx.css.left
+import kotlinx.css.margin
+import kotlinx.css.padding
+import kotlinx.css.pct
+import kotlinx.css.px
+import kotlinx.css.width
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneWithVotes
 import react.child
@@ -16,17 +35,12 @@ import react.functionalComponent
 import react.useEffect
 import react.useReducer
 import react.useState
-import services.addStone
 import services.fetchStones
 import services.voteStone
 import styled.css
 import styled.styledDiv
 
-data class StonesState(
-    val stones: List<StoneWithVotes> = listOf(),
-    val newData: StoneData = StoneData("", "", 5)
-)
-
+@Suppress("MagicNumber")
 val stonesList = functionalComponent<AppProps> { props ->
     val user = props.state.user
     val (stones, setStones) = useState(StonesState())
@@ -122,6 +136,11 @@ val stonesList = functionalComponent<AppProps> { props ->
                 child(addStone, StoneProps(user, stones, setStones))
             }
         }
-
 }
 
+const val DEFAULT_STONE_SIZE = 5
+
+data class StonesState(
+    val stones: List<StoneWithVotes> = listOf(),
+    val newData: StoneData = StoneData("", "", DEFAULT_STONE_SIZE)
+)

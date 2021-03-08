@@ -15,12 +15,6 @@ import services.fetchStones
 import styled.css
 import styled.styledDiv
 
-data class StoneProps(
-    val user: User,
-    val stonesState: StonesState,
-    val setStones: (StonesState) -> Unit
-) : RProps
-
 val addStone = functionalComponent<StoneProps> { props ->
     val user = props.user
     val stones = props.stonesState
@@ -60,7 +54,11 @@ val addStone = functionalComponent<StoneProps> { props ->
 
 
         mCardActions {
-            mButton("add stone", MColor.primary, disabled = !stones.newData.valid(), variant = MButtonVariant.contained, onClick = { _ ->
+            mButton("add stone",
+                MColor.primary,
+                disabled = !stones.newData.valid(),
+                variant = MButtonVariant.contained,
+                onClick = { _ ->
                 addStone(stones.newData, user)
                     .then {
                         fetchStones(user).then {
@@ -73,3 +71,9 @@ val addStone = functionalComponent<StoneProps> { props ->
         }
     }
 }
+
+data class StoneProps(
+    val user: User,
+    val stonesState: StonesState,
+    val setStones: (StonesState) -> Unit
+) : RProps

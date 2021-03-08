@@ -1,6 +1,11 @@
-import com.ccfraser.muirwik.components.*
+import com.ccfraser.muirwik.components.MColor
+import com.ccfraser.muirwik.components.MTypographyColor
+import com.ccfraser.muirwik.components.MTypographyVariant
 import com.ccfraser.muirwik.components.button.mButton
 import com.ccfraser.muirwik.components.button.mIconButton
+import com.ccfraser.muirwik.components.mAppBar
+import com.ccfraser.muirwik.components.mToolbar
+import com.ccfraser.muirwik.components.mTypography
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.css.flexGrow
@@ -10,6 +15,7 @@ import kotlinx.css.px
 import react.functionalComponent
 import styled.css
 
+@Suppress("MagicNumber")
 val appBar = functionalComponent<AppProps> { props ->
     mAppBar {
         mToolbar {

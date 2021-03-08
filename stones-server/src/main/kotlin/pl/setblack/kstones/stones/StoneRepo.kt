@@ -4,8 +4,8 @@ import dev.neeffect.nee.Nee
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import dev.neeffect.nee.plus
 import io.vavr.control.Option
-import io.vavr.kotlin.toVavrList
 import io.vavr.kotlin.none
+import io.vavr.kotlin.toVavrList
 import org.jooq.SelectField
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.count
@@ -23,6 +23,7 @@ class StoneRepo(
 
     private val stonesCache = ctx.fx().cache()
 
+    @Suppress("MagicNumber")
     fun readAllStones(votesOf:Option<String> = none()) = Nee.with(ctx.fx().tx) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         val v1 = Votes("v1")

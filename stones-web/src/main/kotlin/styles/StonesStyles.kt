@@ -1,6 +1,18 @@
-import kotlinx.css.*
+import kotlinx.css.Color
+import kotlinx.css.Display
+import kotlinx.css.Overflow
+import kotlinx.css.color
+import kotlinx.css.display
+import kotlinx.css.em
+import kotlinx.css.fontFamily
+import kotlinx.css.height
+import kotlinx.css.margin
+import kotlinx.css.overflow
+import kotlinx.css.px
+import kotlinx.css.width
 import styled.StyleSheet
 
+@Suppress("MagicNumber")
 object StonesStyles : StyleSheet("StoneStyles", isStatic = true) {
     val robotFont  by css {
         fontFamily = "'Roboto', sans-serif"

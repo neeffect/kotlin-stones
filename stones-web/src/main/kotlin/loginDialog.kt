@@ -5,14 +5,26 @@ import com.ccfraser.muirwik.components.dialog.mDialog
 import com.ccfraser.muirwik.components.dialog.mDialogActions
 import com.ccfraser.muirwik.components.dialog.mDialogTitle
 import kotlinx.browser.window
-import kotlinx.css.*
+import kotlinx.css.BackgroundRepeat
+import kotlinx.css.Color
+import kotlinx.css.Image
+import kotlinx.css.TextTransform
+import kotlinx.css.backgroundColor
+import kotlinx.css.backgroundImage
+import kotlinx.css.backgroundPosition
+import kotlinx.css.backgroundRepeat
+import kotlinx.css.color
+import kotlinx.css.fontSize
+import kotlinx.css.height
+import kotlinx.css.paddingLeft
+import kotlinx.css.px
+import kotlinx.css.textTransform
 import kotlinx.serialization.Serializable
 import org.w3c.dom.url.URLSearchParams
 import react.RProps
 import react.functionalComponent
 import react.useEffect
 import react.useState
-import services.baseUrl
 import services.getGithubOauthUrl
 import services.getGoogleOauthUrl
 import services.loginUser
@@ -21,6 +33,7 @@ import styled.css
 
 data class LoginDialog(val opened: Boolean = false, val setUser: (User) -> Unit) : RProps
 
+@Suppress("MagicNumber")
 val loginDialog = functionalComponent<LoginDialog> { props ->
     val (login, setLogin) = useState("")
     val (password, setPassword) = useState("")

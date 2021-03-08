@@ -1,4 +1,3 @@
-
 group "pl.setblack"
 version "1.1.0-SNAPSHOT"
 
@@ -7,9 +6,12 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version kotlinVersion apply false
     id("org.jetbrains.kotlin.js") version kotlinVersion apply false
     id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion apply false
+    id("io.gitlab.arturbosch.detekt").version("1.15.0")
 }
 
 allprojects {
+    apply (plugin = "io.gitlab.arturbosch.detekt")
+
     repositories {
         jcenter()
         mavenLocal()
