@@ -65,6 +65,11 @@ object Libs {
         const val jackson = "io.ktor:ktor-jackson:$version"
     }
 
+    object Ktorm {
+        const val  version = "3.3.0"
+        const val core = "org.ktorm:ktorm-core:$version"
+    }
+
     object KtMath {
         val ktMath = impl( KtMath.Versions.ktMath) {
             exclude("org.jetbrains.kotlin")

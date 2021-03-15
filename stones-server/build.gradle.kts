@@ -35,6 +35,8 @@ dependencies {
     implementation(Libs.Ktor.clientJvm)
     implementation(Libs.Ktor.clientCIO)
 
+    implementation(Libs.Ktorm.core)
+
 // https://mvnrepository.com/artifact/io.netty/netty-transport-native-epoll
     implementation( group = "io.netty",
         name ="netty-transport-native-epoll",

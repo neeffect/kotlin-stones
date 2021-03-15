@@ -5,12 +5,15 @@ import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import io.vavr.control.Option
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.count
+import org.ktorm.database.Database
+import org.ktorm.dsl.insert
 import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kstones.db.DbSequence
 import pl.setblack.kstones.db.SequenceGenerator
 import pl.setblack.kstones.dbModel.public_.Sequences
 import pl.setblack.kstones.dbModel.public_.tables.Votes
 import pl.setblack.kstones.stones.Web
+import java.sql.Connection
 
 
 typealias VoterId = String
@@ -44,10 +47,15 @@ class VoteRepo(
     }
 
     private fun addVote(id: VoteId, stone: StoneId, voter: VoterId) = Nee.with(ctx.fx().tx) { jdbcProvider ->
-        val dsl = DSL.using(jdbcProvider.getConnection().getResource())
-        val insertedRows = dsl.insertInto(Votes.VOTES)
-            .values(id.id, stone, voter)
-            .execute()
+        val db = Database.connect { object : Connection by jdbcProvider.getConnection().getResource(){
+            @Suppress("EmptyFunctionBlock")
+            override fun close() {}
+        } }
+        val insertedRows = db.insert(VoteDB) {
+            set(it.id, id.id)
+            set(it.stoneId, stone)
+            set(it.voter, voter)
+        }
         if (insertedRows == 1) {
             Option.some(id)
         } else {

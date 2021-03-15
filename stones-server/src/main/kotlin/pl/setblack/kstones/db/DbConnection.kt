@@ -17,7 +17,7 @@ object DbConnection {
     )
 }
 
-fun initializeDb(dbConnection:Connection)  {
+fun initializeDb(dbConnection: Connection) {
     val database = H2Database().apply {
         connection = JdbcConnection(dbConnection)
     }
