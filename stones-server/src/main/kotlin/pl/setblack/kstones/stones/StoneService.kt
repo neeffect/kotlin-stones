@@ -1,12 +1,10 @@
 package pl.setblack.kstones.stones
 
 import dev.neeffect.nee.Nee
-import dev.neeffect.nee.NoEffect
 import dev.neeffect.nee.ctx.web.JDBCBasedWebContextProvider
 import dev.neeffect.nee.effects.Out
 import io.vavr.collection.List
 import io.vavr.control.Option
-import io.vavr.kotlin.none
 import io.vavr.kotlin.option
 import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kotlinStones.StoneId
@@ -21,9 +19,10 @@ class StoneService(
         val z: Out<Nothing, Option<String>> = context.getSecurityContext().flatMap { it.getCurrentUser() }
             .map { user ->
                 user.login
-            }.handle({_->
-                Out.Companion.right<Nothing,Option<String>>(Option.none<String>())},{
-                    login ->  login.option()
+            }.handle({ _ ->
+                Out.Companion.right<Nothing, Option<String>>(Option.none<String>())
+            }, { login ->
+                login.option()
             })
         z
     }.anyError().flatMap { votes: Option<String> ->

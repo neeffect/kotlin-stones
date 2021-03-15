@@ -12,7 +12,6 @@ import pl.setblack.kstones.dbModel.public_.Sequences
 import pl.setblack.kstones.dbModel.public_.tables.Votes
 import pl.setblack.kstones.stones.Web
 
-
 typealias VoterId = String
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
@@ -25,7 +24,7 @@ class VoteRepo(
     private val seq: SequenceGenerator<Web> = DbSequence(ctx, Sequences.GLOBALVOTESSEQ)
 
     fun voteStone(stone: StoneId, voter: VoterId) =
-        existsVote(stone,voter).flatMap { exists ->
+        existsVote(stone, voter).flatMap { exists ->
             if (!exists) {
                 seq.next().flatMap { voteId ->
                     addVote(VoteId(voteId), stone, voter)
@@ -35,8 +34,8 @@ class VoteRepo(
             }
         }
 
-    fun calcVotes(stone: StoneId) = Nee.with(ctx.fx().tx) {jdbcProvider ->
-        DSL.using(jdbcProvider.getConnection().getResource()).let {dsl->
+    fun calcVotes(stone: StoneId) = Nee.with(ctx.fx().tx) { jdbcProvider ->
+        DSL.using(jdbcProvider.getConnection().getResource()).let { dsl ->
             dsl.select(count()).from(Votes.VOTES).where(
                 Votes.VOTES.STONE_ID.eq(stone)
             ).fetchSingle(0) as Int
@@ -55,13 +54,12 @@ class VoteRepo(
         }
     }
 
-    private fun existsVote(stone:StoneId, voter: VoterId) = Nee.with(ctx.fx().tx) {jdbcProvider ->
+    private fun existsVote(stone: StoneId, voter: VoterId) = Nee.with(ctx.fx().tx) { jdbcProvider ->
         DSL.using(jdbcProvider.getConnection().getResource()).let { dsl ->
             val counted = dsl.select(count()).from(Votes.VOTES)
-                .where( Votes.VOTES.STONE_ID.eq(stone).and(Votes.VOTES.VOTER.eq(voter) ))
+                .where(Votes.VOTES.STONE_ID.eq(stone).and(Votes.VOTES.VOTER.eq(voter)))
                 .fetchSingle(0) as Int
             counted > 0
         }
-
     }
 }

@@ -7,13 +7,14 @@ import pl.setblack.kotlinStones.StoneId
 import pl.setblack.kstones.infrastructure.InfrastuctureModule
 
 class VoteService(
-    private  val context: JDBCBasedWebContextProvider,
-    private val voteRepo: VoteRepo) {
+    private val context: JDBCBasedWebContextProvider,
+    private val voteRepo: VoteRepo
+) {
 
     fun vote(stoneId: StoneId) = Nee.withError(
         context.fx().secured(List.of(InfrastuctureModule.SecurityRoles.writer))
     ) { ctx ->
-        ctx.getSecurityContext().flatMap{ security ->
+        ctx.getSecurityContext().flatMap { security ->
             security.getCurrentUser()
         }.map { user ->
             user.login

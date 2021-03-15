@@ -13,10 +13,9 @@ typealias Web = WebContext<Connection, JDBCProvider>
 /**
  * This is DI  solution for Kotlin
  */
-open class StonesModule(
-    private val infra: InfrastuctureModule) {
+open class StonesModule(private val infra: InfrastuctureModule) {
 
-    //---------------------------------
+    // ---------------------------------
     private val seq: DbSequence by lazy {
         DbSequence(infra.context, Sequences.GLOBALSTONESSEQ)
     }
@@ -24,6 +23,4 @@ open class StonesModule(
     open val stoneRepo by lazy { StoneRepo(infra.context, seq) }
 
     open val stoneService by lazy { StoneService(infra.context, stoneRepo) }
-
 }
-

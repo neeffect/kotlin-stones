@@ -23,6 +23,9 @@ repositories {
 }
 
 dependencies {
+    detektPlugins("pl.setblack:kure-potlin:0.1.3")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+
     implementation(Libs.JOOQ.jooq)
     implementation(Libs.Kotlin.reflect)
     implementation(Libs.H2.database)

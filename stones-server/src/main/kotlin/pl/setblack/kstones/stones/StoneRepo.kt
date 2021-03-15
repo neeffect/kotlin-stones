@@ -18,13 +18,13 @@ import pl.setblack.kstones.dbModel.public_.tables.Stones
 import pl.setblack.kstones.dbModel.public_.tables.Votes
 
 class StoneRepo(
-    private  val ctx: JDBCBasedWebContextProvider,
-    private val seq: SequenceGenerator<Web>) {
-
+    private val ctx: JDBCBasedWebContextProvider,
+    private val seq: SequenceGenerator<Web>
+) {
     private val stonesCache = ctx.fx().cache()
 
     @Suppress("MagicNumber")
-    fun readAllStones(votesOf:Option<String> = none()) = Nee.with(ctx.fx().tx) { jdbcProvider ->
+    fun readAllStones(votesOf: Option<String> = none()) = Nee.with(ctx.fx().tx) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         val v1 = Votes("v1")
         val v2 = Votes("v2")
@@ -32,8 +32,7 @@ class StoneRepo(
         val whoVotedCondition = votesOf.map { name ->
             v2.VOTER.eq(name)
         }.getOrElse(DSL.falseCondition())
-        val voterSelect = votesOf.map {v2.VOTER as SelectField<String> }.
-            getOrElse(DSL.inline(null, v2.VOTER))
+        val voterSelect = votesOf.map { v2.VOTER as SelectField<String> }.getOrElse(DSL.inline(null, v2.VOTER))
         dsl.select(
             Stones.STONES.ID,
             Stones.STONES.NAME,
@@ -41,13 +40,13 @@ class StoneRepo(
             Stones.STONES.SIZE,
             count(v1.ID),
             voterSelect
-            ).from(Stones.STONES)
+        ).from(Stones.STONES)
             .leftOuterJoin(v1)
             .on(Stones.STONES.ID.eq(v1.STONE_ID))
             .leftOuterJoin(v2)
-            .on( Stones.STONES.ID.eq(v2.STONE_ID).and(whoVotedCondition))
+            .on(Stones.STONES.ID.eq(v2.STONE_ID).and(whoVotedCondition))
             .groupBy(Stones.STONES.ID)
-            .fetch {record  ->
+            .fetch { record ->
                 StoneWithVotes(
                     Stone(
                         record[0] as Long,
@@ -59,17 +58,16 @@ class StoneRepo(
             .toVavrList()
     }
 
-    fun readStone(id:StoneId) = Nee.with(
-            stonesCache.of(id) + ctx.fx().tx) { jdbcProvider ->
-            val dsl = DSL.using(jdbcProvider.getConnection().getResource())
-            val record = dsl.selectFrom(Stones.STONES)
-                .where(Stones.STONES.ID.eq(id))
-                .fetchOneInto(Stones.STONES)
-            Stone(record.id, StoneData(record.name, record.color,  record.size))
+    fun readStone(id: StoneId) = Nee.with(
+        stonesCache.of(id) + ctx.fx().tx) { jdbcProvider ->
+        val dsl = DSL.using(jdbcProvider.getConnection().getResource())
+        val record = dsl.selectFrom(Stones.STONES)
+            .where(Stones.STONES.ID.eq(id))
+            .fetchOneInto(Stones.STONES)
+        Stone(record.id, StoneData(record.name, record.color, record.size))
     }
 
-    fun addNewStone(newStone: StoneData)
-            = seq.next().flatMap {
+    fun addNewStone(newStone: StoneData) = seq.next().flatMap {
         addStone(it, newStone)
     }
 

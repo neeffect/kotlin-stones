@@ -29,8 +29,8 @@ internal val startTime = System.currentTimeMillis()
 internal fun startServer(oauthModule: StonesOauthModule) {
     val webModule = WebModule(oauthModule.oauthModule.jwtConfigModule)
 
-
     LoggerFactory.getLogger("main").info("starting server")
+
     val server = embeddedServer(Netty, port = 3000, watchPaths = emptyList()) {
 
         install(ContentNegotiation) {
@@ -54,13 +54,12 @@ internal fun startServer(oauthModule: StonesOauthModule) {
             get("/") {
                 call.respondText("ok")
             }
-
         }
         routing(webModule.infraModule.context.sysApi())
     }
 
     server.start(wait = false)
-    val startupTime = System.currentTimeMillis() - startTime;
+    val startupTime = System.currentTimeMillis() - startTime
     LoggerFactory.getILoggerFactory().getLogger("main").info("started in $startupTime ms")
 }
 
@@ -86,5 +85,3 @@ fun main() {
         println("directory: $secPath with security config does not exist")
     }
 }
-
-

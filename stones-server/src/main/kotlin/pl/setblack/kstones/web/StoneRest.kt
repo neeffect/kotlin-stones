@@ -55,8 +55,4 @@ class StoneRest(
             call.respondText("HELLO WORLD!")
         }
     }
-
-
 }
-
-
