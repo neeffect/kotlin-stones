@@ -28,7 +28,7 @@ spec:
               memory: 400Mi
               cpu: 50m
             limits:
-              cpu: 150m
+              cpu: 200m
               memory: 800Mi
           volumeMounts:
             - name: oauth-secrets
