@@ -10,7 +10,7 @@ env:
   GKE_CLUSTER: cluster-1
   GKE_ZONE: europe-west3-b
   IMAGE: stones-server
-  IMAGEWB: stones-web
+  IMAGEWEB: stones-web
   OAUTHCONF_SECRET: ${{ secrets.OAUTHCONF_SECRET }}
   JWTCONF_SECRET: ${{ secrets.JWTCONF_SECRET }}
 
