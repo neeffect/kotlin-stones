@@ -23,7 +23,7 @@ class StoneRepo(
 ) {
     private val stonesCache = ctx.fx().cache()
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "MutableCollections")
     fun readAllStones(votesOf: Option<String> = none()) = Nee.with(ctx.fx().tx) { jdbcProvider ->
         val dsl = DSL.using(jdbcProvider.getConnection().getResource())
         val v1 = Votes("v1")

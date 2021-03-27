@@ -16,6 +16,7 @@ import pl.setblack.kotlinStones.StoneData
 import pl.setblack.kstones.stones.StoneService
 import pl.setblack.kstones.votes.VoteService
 
+@Suppress("UnsafeCallOnNullableType")
 class StoneRest(
     private val webContext: JDBCBasedWebContextProvider,
     private val stoneService: StoneService,

@@ -11,10 +11,9 @@ import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpHeaders
 import io.ktor.request.header
 import io.vavr.kotlin.option
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import pl.setblack.kstones.db.DbConnection
 import pl.setblack.kstones.db.initializeDb
+import java.sql.Connection
 import java.sql.DriverManager
 
 open class InfrastuctureModule(private val jwtConfigurationModule: JwtConfigurationModule<User, UserRole>) {
@@ -45,14 +44,12 @@ open class InfrastuctureModule(private val jwtConfigurationModule: JwtConfigurat
     }
 }
 
-private fun upgradeDatabase() {
-    GlobalScope.launch {
-        DriverManager.getConnection(
-            DbConnection.jdbcConfig.url,
-            DbConnection.jdbcConfig.user,
-            DbConnection.jdbcConfig.password
-        ).use {
-            initializeDb(it)
-        }
+private fun upgradeDatabase(): Connection = run {
+    DriverManager.getConnection(
+        DbConnection.jdbcConfig.url,
+        DbConnection.jdbcConfig.user,
+        DbConnection.jdbcConfig.password
+    ).use {
+        initializeDb(it)
     }
 }

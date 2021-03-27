@@ -25,9 +25,11 @@ spec:
             - containerPort: 3000
           resources:
             requests:
+              memory: 200Mi
               cpu: 250m
             limits:
-              cpu: 2000m
+              cpu: 1000m
+              memory: 500Mi
           volumeMounts:
             - name: oauth-secrets
               mountPath: "/securedEtc"

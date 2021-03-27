@@ -13,9 +13,9 @@ fun loginUser(appProps: AppProps): Promise<Unit> =
 
 
 fun fetchData(url: String, appProps: AppProps) =
-    services.fetchData<Any>(url, null, appProps)
+    services.fetchData<Any>(url, appProps)
 
-fun <T> fetchData(url: String, postData: T? = null, appProps: AppProps) =
+fun <T> fetchData(url: String, appProps: AppProps) =
     window
         .fetch(url, RequestInit(
             headers = Headers().apply {
@@ -25,5 +25,5 @@ fun <T> fetchData(url: String, postData: T? = null, appProps: AppProps) =
                 }
             }
         ))
-        .then( Response::json, { error -> println(error) })
+        .then(Response::json, { error -> println(error) })
 

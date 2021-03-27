@@ -23,8 +23,8 @@ repositories {
 }
 
 dependencies {
-    detektPlugins("pl.setblack:kure-potlin:0.1.3")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    detektPlugins("pl.setblack:kure-potlin:0.4.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
 
     implementation(Libs.JOOQ.jooq)
     implementation(Libs.Kotlin.reflect)
@@ -74,8 +74,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 
@@ -142,19 +142,19 @@ project.tasks["generateJooq"].dependsOn += "update"
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileKotlin.kotlinOptions.apply {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
     javaParameters = true
     allWarningsAsErrors = true
 }
 val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
 compileTestKotlin.kotlinOptions.apply {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
     javaParameters = true
     allWarningsAsErrors = false
 }
 
 compileKotlin.kotlinOptions.apply {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
     javaParameters = true
     allWarningsAsErrors = true
 }

@@ -26,7 +26,8 @@ import java.nio.file.Paths
 
 internal val startTime = System.currentTimeMillis()
 
-internal fun startServer(oauthModule: StonesOauthModule) {
+@Suppress("ReturnUnit")
+internal fun startServer(oauthModule: StonesOauthModule) = run {
     val webModule = WebModule(oauthModule.oauthModule.jwtConfigModule)
 
     LoggerFactory.getLogger("main").info("starting server")
@@ -63,7 +64,7 @@ internal fun startServer(oauthModule: StonesOauthModule) {
     LoggerFactory.getILoggerFactory().getLogger("main").info("started in $startupTime ms")
 }
 
-fun main() {
+fun main() = run {
     LoggerFactory.getILoggerFactory().getLogger("main").info("starting")
 
     val rolesMapper: RolesMapper = { _, _ ->

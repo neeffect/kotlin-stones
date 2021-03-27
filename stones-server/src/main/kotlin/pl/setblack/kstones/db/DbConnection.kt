@@ -16,11 +16,12 @@ object DbConnection {
     )
 }
 
-fun initializeDb(dbConnection: Connection) {
+fun initializeDb(dbConnection: Connection): Connection = run {
     val database = H2Database().apply {
         connection = JdbcConnection(dbConnection)
     }
     val resourceAccessor = ClassLoaderResourceAccessor(DbConnection::class.java.classLoader)
     val liquibaseChangeLog = Liquibase("db/db.changelog-master.xml", resourceAccessor, database)
     liquibaseChangeLog.update(liquibase.Contexts(), liquibase.LabelExpression())
+    dbConnection
 }
