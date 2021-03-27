@@ -21,11 +21,11 @@ spec:
             - containerPort: 80
           resources:
             requests:
-              memory: 50m
+              memory: 100m
               cpu: 50m
             limits:
               cpu: 50m
-              memory: 100m
+              memory: 200m
   selector:
     matchLabels:
       app: stones-web

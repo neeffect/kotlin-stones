@@ -64,7 +64,7 @@ internal fun startServer(oauthModule: StonesOauthModule) = run {
     LoggerFactory.getILoggerFactory().getLogger("main").info("started in $startupTime ms")
 }
 
-fun main() = run {
+fun main():Unit = run {
     LoggerFactory.getILoggerFactory().getLogger("main").info("starting")
 
     val rolesMapper: RolesMapper = { _, _ ->
