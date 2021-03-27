@@ -29,7 +29,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew :stones-server:build :stones-server:fatJar
+        run: ./gradlew :stones-server:build :stones-server:fatJar :stones-web:build
 
       # Setup gcloud CLI
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -46,7 +46,7 @@ jobs:
       - run: |-
           gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
       # Build the Docker image
-      - name: Build
+      - name: Build server
         run: |-
           docker build \
             --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
@@ -55,20 +55,46 @@ jobs:
           -f stones-server/infra/Dockerfile \
             stones-server
       # Push the Docker image to Google Container Registry
-      - name: Publish
+      - name: Publish server
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
       # Set up kustomize
-      - name: Set up Kustomize
+      - name: Set up Kustomize for server
         run: |-
           curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
           chmod u+x ./kustomize
       # Deploy the Docker image to the GKE cluster
-      - name: Deploy
+      - name: Deploy server
         run: |-
           cd stones-server/infra
           sed -i "s/JWTCONF_SECRET/${JWTCONF_SECRET}/" secrets.yml
           sed -i "s/OAUTHCONF_SECRET/${OAUTHCONF_SECRET}/" secrets.yml
+          ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+          ../../kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/$IMAGE
+          kubectl get services -o wide
+      # Build the Docker image
+      - name: Build web
+        run: |-
+          docker build \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
+          -f stones-web/infra/Dockerfile \
+            stones-web
+      # Push the Docker image to Google Container Registry
+      - name: Publish web
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+      # Set up kustomize
+      - name: Set up Kustomize for web
+        run: |-
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy web
+        run: |-
+          cd stones-web/infra
           ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ../../kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$IMAGE
