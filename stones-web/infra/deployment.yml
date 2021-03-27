@@ -24,7 +24,7 @@ spec:
               memory: 100m
               cpu: 50m
             limits:
-              cpu: 50m
+              cpu: 150m
               memory: 200m
   selector:
     matchLabels:
