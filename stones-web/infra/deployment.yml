@@ -22,9 +22,9 @@ spec:
           resources:
             requests:
               memory: 50m
-              cpu: 100m
+              cpu: 50m
             limits:
-              cpu: 250m
+              cpu: 50m
               memory: 100m
   selector:
     matchLabels:
