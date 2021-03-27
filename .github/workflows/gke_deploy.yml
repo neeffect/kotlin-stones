@@ -10,6 +10,7 @@ env:
   GKE_CLUSTER: cluster-1
   GKE_ZONE: europe-west3-b
   IMAGE: stones-server
+  IMAGEWB: stones-web
   OAUTHCONF_SECRET: ${{ secrets.OAUTHCONF_SECRET }}
   JWTCONF_SECRET: ${{ secrets.JWTCONF_SECRET }}
 
@@ -29,7 +30,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew :stones-server:build :stones-server:fatJar :stones-web:build
+        run: ./gradlew build :stones-server:fatJar
 
       # Setup gcloud CLI
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -77,7 +78,7 @@ jobs:
       - name: Build web
         run: |-
           docker build \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+            --tag "gcr.io/$PROJECT_ID/$IMAGEWEB:$GITHUB_SHA" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
           -f stones-web/infra/Dockerfile \
@@ -85,17 +86,12 @@ jobs:
       # Push the Docker image to Google Container Registry
       - name: Publish web
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
-      # Set up kustomize
-      - name: Set up Kustomize for web
-        run: |-
-          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-          chmod u+x ./kustomize
+          docker push "gcr.io/$PROJECT_ID/$IMAGEWEB:$GITHUB_SHA"
       # Deploy the Docker image to the GKE cluster
       - name: Deploy web
         run: |-
           cd stones-web/infra
-          ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+          ../../kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGEWEB:$GITHUB_SHA
           ../../kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment/$IMAGE
+          kubectl rollout status deployment/$IMAGEWEB
           kubectl get services -o wide
