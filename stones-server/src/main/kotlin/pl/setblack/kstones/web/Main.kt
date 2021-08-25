@@ -65,7 +65,7 @@ internal fun startServer(oauthModule: StonesOauthModule) = run {
 }
 
 fun main(): Unit = run {
-    LoggerFactory.getILoggerFactory().getLogger("main").info("starting")
+    LoggerFactory.getILoggerFactory().getLogger("main").info("starting serv")
 
     val rolesMapper: RolesMapper = { _, _ ->
         list(InfrastuctureModule.SecurityRoles.writer)
@@ -85,4 +85,5 @@ fun main(): Unit = run {
     } else {
         println("directory: $secPath with security config does not exist")
     }
+
 }
