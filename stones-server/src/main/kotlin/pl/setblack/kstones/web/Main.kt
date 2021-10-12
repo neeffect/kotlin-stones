@@ -65,7 +65,7 @@ internal fun startServer(oauthModule: StonesOauthModule) = run {
 }
 
 fun main(): Unit = run {
-    LoggerFactory.getILoggerFactory().getLogger("main").info("starting serv")
+    LoggerFactory.getILoggerFactory().getLogger("main").info("starting")
 
     val rolesMapper: RolesMapper = { _, _ ->
         list(InfrastuctureModule.SecurityRoles.writer)
