@@ -85,5 +85,4 @@ fun main(): Unit = run {
     } else {
         println("directory: $secPath with security config does not exist")
     }
-
 }
